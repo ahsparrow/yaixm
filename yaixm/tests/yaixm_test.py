@@ -50,3 +50,36 @@ def test_json_sting_read():
 
   assert input == output
 
+def test_validation_good():
+  input = {
+    'header': {
+      'airac_date': "2017-05-12",
+      'author': "Bloggs",
+      'email': "foo@bar.com",
+      'release_timestamp': "2017-05-11T07:55:53+00:00",
+      'schema_version': 1
+    },
+    'airspace': [
+      {
+        'name': "BENSON",
+        'shape': [
+          {
+            'boundary': [
+              {
+                'circle': {
+                  'centre': "513654N 0010545W",
+                  'radius': "2 nm"
+                }
+              }
+            ],
+            'lower': "GND",
+            'upper': "2203 ft"
+          }
+        ],
+        "type": "ATZ"
+      }
+    ]
+  }
+
+  e = yaixm.validate(input)
+  assert e is None
