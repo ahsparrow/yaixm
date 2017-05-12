@@ -1,5 +1,7 @@
-__pycache__
 *.pyc
-dist
+
+.cache
+__pycache__
 build
+dist
 yaixm.egg-info

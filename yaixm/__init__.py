@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Airplot.  If not, see <http://www.gnu.org/licenses/>.
 
+import json as _json
+
 import jsonschema
 import pkg_resources
 import yaml
@@ -27,17 +29,14 @@ from yaixm.openair import convert as openair
 
 def load(stream, json=False):
   if json:
-    if hasattr(stream, 'read')
-      data = json.load(stream)
+    if hasattr(stream, 'read'):
+      data = _json.load(stream)
     else:
-      data = json.loads(stream)
+      data = _json.loads(stream)
   else:
     data = yaml.load(stream, Loader=Loader)
 
   return data
-
-def dump(airspace, json=False):
-  with
 
 def validate(airspace):
   schema = load(pkg_resources.resource_string(__name__, "data/schema.yaml"))
