@@ -1,0 +1,242 @@
+id: http://freeflight.org.uk/aero-schema
+
+schema: http://json-schema.org/draft-04-schema
+
+definitions:
+  # This is more restrictive than the AIXM Character3Type
+  name: &name
+    type: string
+    pattern: ^[ \(\)\-/0-9A-Z]*$
+
+  # Array of annotation string
+  annotations: &annotations
+    type: array
+    items:
+      type: string
+
+    additionalItems: false
+    minItems: 1
+
+  # Standard airspace classes
+  class: &class
+    type: string
+    enum: [A, B, C, D, E, F, G]
+
+  # Airspace types from AIXM
+  type: &type
+    type: string
+    enum:
+      - ATZ         # Air Traffic Zone
+      - AWY         # Airway
+      - CTA         # Control area. Upwards from a specified limit
+      - CTR         # Control zone. Upwards from the surface
+      - D           # Danger area
+      - D_OTHER     # Dangerous activity, but not a Danger area
+      - OTHER       # As specified by localtype
+      - P           # Prohibited area
+      - R           # Restricted area
+      - TMA         # Terminal control area
+
+  # Local type, applicable when type is OTHER or D_OTHER
+  localtype: &localtype
+    type: string
+    enum:
+      - DZ          # Parachute drop zone
+      - GLIDER      # Gliding operations
+      - GVS         # Gas venting station
+      - HIRTA       # High intensity radio transmission area
+      - ILS         # ILS feather
+      - LASER       # Laser site
+      - MATZ        # Military ATZ
+      - NOATZ       # Non-ATZ airfield
+      - RMZ         # Radio mandatory zone
+      - RTM         # Radio mast (and other obstacles)
+      - UL          # Ultra-light strip
+      - TMZ         # Transponder mandatory zone
+
+  # Rules applicable to an airspace volume
+  rules: &rules
+    type: array
+    items:
+      type: string
+      enum:
+        - LOA       # Letter of agreement
+        - NOSSR     # Non-SSR area
+        - RAZ       # Radio advisory zone
+        - RMZ       # Radio mandatory zone
+        - SI        # Statutary Instrument
+        - TRA       # Temporary reserved area
+        - TMZ       # Transponder mandatory zone
+
+    additionalItems: false
+    minItems: 1
+
+  # Military/civil operations
+  control: &control
+    type: string
+    enum:
+      - CIVIL
+      - MILITARY
+      - JOINT
+
+  # Latitude/longitude tuple
+  latlon: &latlon
+    type: string
+    pattern: ^[0-9]{6}[NS] [01][0-9]{6}[EW]$
+
+    additionalItems: false
+
+  # Circle or arc radius
+  radius: &radius
+    type: string
+    pattern: ^[0-9]*?.?[0-9]+[ ](nm|km)$
+
+  # Circular boundary
+  circle: &circle
+    type: object
+    properties:
+      centre: *latlon
+      radius: *radius
+
+    required: [centre, radius]
+    additionalProperties: false
+
+  # Arc boundary segment
+  arc: &arc
+    type: object
+    properties:
+      centre: *latlon
+      dir:
+        type: string
+        enum: [cw, ccw]
+
+      radius: *radius
+      to: *latlon
+
+    required: [centre, dir, radius, to]
+    additionalProperties: false
+
+  # Line boundary segment
+  line: &line
+    type: array
+    items: *latlon
+    additionalItems: false
+    minItems: 1
+
+  # Boundary segment selection
+  boundary_segment: &boundary_segment
+    type: object
+    properties:
+      arc: *arc
+      circle: *circle
+      line: *line
+
+    minProperties: 1
+    maxProperties: 1
+    additionalProperties: false
+
+  # Airspace volume with upper limit, lower limit and boundary
+  volume: &volume
+    type: object
+    properties:
+      annotations: *annotations
+
+      boundary:
+        type: array
+        items: *boundary_segment
+        minItems: 1
+
+      # Overrides class in parent airspace
+      class: *class
+
+      lower:
+        type: string
+        # Ground, or referenced to standard pressure or MSL
+        pattern: ^(GND|FL[0-9]{2,3}|[0-9]{1,5}[ ](m|ft))$
+
+      # Aggregated with rules from parent airspace
+      rules: *rules
+
+      # Indicates order of aggregation
+      seqnum:
+        type: integer
+        minimum: 1
+
+      # Optional name suffix for this volume
+      suffix:
+        <<: *name
+        minLength: 1
+
+      upper:
+        type: string
+        # Referenced to either standard pressure or MSL
+        pattern: ^(FL[0-9]{2,3}|[0-9]{1,5}[ ](m|ft))$
+
+    required: [lower, upper, boundary]
+    additionalProperties: false
+
+  # Airspace region, consisting of one or more airspace volumes
+  airspace: &airspace
+    type: object
+    properties:
+      annotations: *annotations
+
+      # Overriden by class in child volume
+      class: *class
+
+      # Optional, assumed JOINT if not specified
+      control: *control
+
+      # Speficied if feature type is OTHER or D_OTHER
+      localtype: *localtype
+
+      name:
+        <<: *name
+        minLength: 2
+
+      # Aggregated with rules in child volumes
+      rules: *rules
+
+      shape:
+        type: array
+        items: *volume
+        minItems: 1
+
+      type: *type
+
+    required: [name, shape, type]
+    additionalProperties: false
+
+  # Header
+  header: &header
+    type: object
+    properties:
+      # Airspace AIRAC release date
+      airac_date:
+        format: date
+
+      author:
+        type: string
+      email:
+        format: email
+
+      # Data release timestamp
+      release_timestamp:
+        format: date-time
+
+      # Airspace schema version
+      schema_version:
+        type: integer
+
+    required: [airac_date, author, email, release_timestamp, schema_version]
+    addtionalProperties: false
+
+type: object
+properties:
+  header: *header
+  airspace:
+    type: array
+    items: *airspace
+
+required: [header, airspace]
+addtionalProperties: false
