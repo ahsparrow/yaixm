@@ -1,8 +1,8 @@
 # Copyright 2017 Alan Sparrow
 #
-# This file is part of ukair
+# This file is part of yaixm
 #
-# Airplot is free software: you can redistribute it and/or modify
+# yaixm is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
@@ -13,7 +13,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with Airplot.  If not, see <http://www.gnu.org/licenses/>.
+# along with yaixm.  If not, see <http://www.gnu.org/licenses/>.
 
 import sys
 
