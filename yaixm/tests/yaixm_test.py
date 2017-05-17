@@ -1,5 +1,4 @@
 import json
-import re
 import tempfile
 
 import yaixm
@@ -95,7 +94,7 @@ def test_validation_bad():
 def test_openair():
   input = dict(TEST_AIRSPACE)
   oa = yaixm.openair(input['airspace'])
-  assert len(oa.split('\n')) == 7
+  assert len(oa) == 6
 
 def test_openair_name():
   def name_func(feature, volume):
@@ -104,7 +103,7 @@ def test_openair_name():
   input = dict(TEST_AIRSPACE)
   oa = yaixm.openair(input['airspace'], nfunc=name_func)
 
-  assert re.search("FOONAME", oa)
+  assert oa[1] == "AN FOONAME"
 
 def test_openair_class():
   def class_func(feature, volume):
@@ -113,4 +112,4 @@ def test_openair_class():
   input = dict(TEST_AIRSPACE)
   oa = yaixm.openair(input['airspace'], cfunc=class_func)
 
-  assert re.search("AC A", oa)
+  assert oa[0] == "AC A"
