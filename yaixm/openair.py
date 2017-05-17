@@ -126,7 +126,7 @@ def do_boundary(openair, boundary):
   if 'line' in boundary[0] and 'line' in boundary[-1]:
     do_point(openair, boundary[0]['line'][0])
 
-# Convert to openair format (DOS line endings)
+# Convert to array of openair records
 def convert(airspace,
             ffunc=default_filter, nfunc=default_name, cfunc=default_class):
   openair = []
@@ -138,21 +138,4 @@ def convert(airspace,
         do_levels(openair, volume)
         do_boundary(openair, volume['boundary'])
 
-  openair.append("")
-  return "\r\n".join(openair)
-
-if __name__ == "__main__":
-  import argparse
-  import json
-
-  parser = argparse.ArgumentParser()
-  parser.add_argument("airspace_file", type=argparse.FileType("r"))
-  parser.add_argument("openair_file", nargs="?", type=argparse.FileType("w"),
-                      default=sys.stdout)
-  args = parser.parse_args()
-
-  airspace = json.load(args.airspace_file)
-
-  openair = convert(airspace['airspace'])
-
-  args.openair_file.write(openair)
+  return openair
