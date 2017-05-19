@@ -26,7 +26,8 @@ setup(
     entry_points={
         'console_scripts': [
             'yaixm_check = yaixm.cli:check',
-            'yaixm_openair = yaixm.cli:openair'
+            'yaixm_openair = yaixm.cli:openair',
+            'yaixm_json = yaixm.cli:yaml_to_json'
         ]
     }
 )

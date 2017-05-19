@@ -1,4 +1,5 @@
 import argparse
+import json
 import sys
 
 import yaml
@@ -46,3 +47,25 @@ def openair():
   output_oa = output_oa.encode("ascii").decode("ascii")
 
   args.openair_file.write(output_oa)
+
+def yaml_to_json():
+  import argparse
+
+  parser = argparse.ArgumentParser()
+  parser.add_argument("yaml_file", nargs="?",
+                      help="YAML input file, stdin if not specified",
+                      type=argparse.FileType("r"), default=sys.stdin)
+  parser.add_argument("json_file", nargs="?",
+                      help="JSON output file, stdout if not specified",
+                      type=argparse.FileType("w"), default=sys.stdout)
+  parser.add_argument("-i", "--indent", type=int, help="indent level",
+                      default=None)
+  parser.add_argument("-s", "--sort", help="sort keys", action="store_true")
+  args = parser.parse_args()
+
+  data = yaml.load(args.yaml_file, Loader=yaml.CLoader)
+  json.dump(data, args.json_file, sort_keys=args.sort, indent=args.indent)
+
+  if args.json_file is sys.stdout:
+    print()
+
