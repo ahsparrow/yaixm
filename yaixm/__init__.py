@@ -15,36 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with yaixm.  If not, see <http://www.gnu.org/licenses/>.
 
-import json as _json
+from .helpers import load, validate
+from .openair import convert as openair
 
-import jsonschema
-import pkg_resources
-import yaml
-try:
-  from yaml import CLoader as Loader
-except ImportError:
-  from yaml import Loader
-
-from yaixm.openair import convert as openair
-
-def load(stream, json=False):
-  if json:
-    if hasattr(stream, 'read'):
-      data = _json.load(stream)
-    else:
-      data = _json.loads(stream)
-  else:
-    data = yaml.load(stream, Loader=Loader)
-
-  return data
-
-def validate(airspace):
-  schema = load(pkg_resources.resource_string(__name__, "data/schema.yaml"))
-
-  try:
-    jsonschema.validate(airspace, schema,
-                        format_checker=jsonschema.FormatChecker())
-  except jsonschema.exceptions.ValidationError as e:
-    return e
-
-  return None

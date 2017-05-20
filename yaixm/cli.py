@@ -4,7 +4,8 @@ import sys
 
 import yaml
 
-import yaixm
+from .helpers import load, validate
+from .openair import convert as openair
 
 def check():
   parser = argparse.ArgumentParser()
@@ -13,11 +14,8 @@ def check():
                       type=argparse.FileType("r"), default=sys.stdin)
   args = parser.parse_args()
 
-  # Load airspace
-  airspace = yaml.load(args.airspace_file)
-
   # Validate and write any errors to stderr
-  e = yaixm.validate(airspace)
+  e = validate(airspace)
   if e:
     print(e, file=sys.stderr)
     sys.exit(1)
@@ -34,10 +32,10 @@ def openair():
   args = parser.parse_args()
 
   # Load airspace
-  airspace = yaml.load(args.airspace_file)
+  airspace = load(args.airspace_file)
 
   # Convert to openair
-  oa = yaixm.openair(airspace)
+  oa = openair(airspace)
 
   # Add DOS line endings
   oa.append("")
@@ -63,7 +61,7 @@ def yaml_to_json():
   parser.add_argument("-s", "--sort", help="sort keys", action="store_true")
   args = parser.parse_args()
 
-  data = yaml.load(args.yaml_file, Loader=yaml.CLoader)
+  data = load(args.yaml_file)
   json.dump(data, args.json_file, sort_keys=args.sort, indent=args.indent)
 
   if args.json_file is sys.stdout:
