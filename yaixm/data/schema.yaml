@@ -285,6 +285,7 @@ properties:
   loa:
     type: array
     items: *loa
+    minItems: 1
 
 required: [release, airspace]
 addtionalProperties: false
