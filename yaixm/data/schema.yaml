@@ -1,26 +1,78 @@
 id: http://freeflight.org.uk/aero-schema
 
-schema: http://json-schema.org/draft-04-schema
+schema: http://json-schema.org/draft-04/schema#
 
 definitions:
+  #--------------------------------------------------------------------
+  # Type definition/enumerations, etc.
+
+  # ICAO airspace classes
+  class: &class
+    type: string
+    enum: [A, B, C, D, E, F, G]
+
+  # Military/civil operations
+  controltype: &controltype
+    type: string
+    enum:
+      - CIVIL
+      - MILITARY
+      - JOINT
+
+  # Latitude/longitude tuple
+  latlon: &latlon
+    type: string
+    pattern: ^[0-9]{6}[NS] [01][0-9]{6}[EW]$
+
+  # Local type, applicable when type is OTHER or D_OTHER
+  localtype: &localtype
+    type: string
+    enum:
+      - DZ          # Parachute drop zone
+      - GLIDER      # Gliding operations
+      - GVS         # Gas venting station
+      - HIRTA       # High intensity radio transmission area
+      - ILS         # ILS feather
+      - LASER       # Laser site
+      - MATZ        # Military ATZ
+      - NOATZ       # Non-ATZ airfield
+      - RAT         # Temporary restricted area
+      - RMZ         # Radio mandatory zone
+      - RTM         # Radio mast (and other obstacles)
+      - UL          # Ultra-light strip
+      - TMZ         # Transponder mandatory zone
+
   # This is more restrictive than the AIXM Character3Type
   name: &name
     type: string
     pattern: ^[ \(\)\-/0-9A-Z]*$
 
-  # Array of annotation string
-  annotations: &annotations
+  # Array of notes
+  notes: &notes
     type: array
     items:
       type: string
-
-    additionalItems: false
     minItems: 1
 
-  # Standard airspace classes
-  class: &class
-    type: string
-    enum: [A, B, C, D, E, F, G]
+  # Rules applicable to an airspace volume
+  rules: &rules
+    type: array
+    items:
+      type: string
+      enum:
+        - LOA       # Letter of agreement
+        - NOSSR     # Non-SSR area
+        - RAZ       # Radio advisory zone
+        - RMZ       # Radio mandatory zone
+        - SI        # Statutary Instrument
+        - TRA       # Temporary reserved area
+        - TMZ       # Transponder mandatory zone
+    minItems: 1
+
+  # Indicates order of aggregation
+  seqno: &seqno
+    type: integer
+    minimum: 1
 
   # Airspace types from AIXM
   type: &type
@@ -37,54 +89,8 @@ definitions:
       - R           # Restricted area
       - TMA         # Terminal control area
 
-  # Local type, applicable when type is OTHER or D_OTHER
-  localtype: &localtype
-    type: string
-    enum:
-      - DZ          # Parachute drop zone
-      - GLIDER      # Gliding operations
-      - GVS         # Gas venting station
-      - HIRTA       # High intensity radio transmission area
-      - ILS         # ILS feather
-      - LASER       # Laser site
-      - MATZ        # Military ATZ
-      - NOATZ       # Non-ATZ airfield
-      - RMZ         # Radio mandatory zone
-      - RTM         # Radio mast (and other obstacles)
-      - UL          # Ultra-light strip
-      - TMZ         # Transponder mandatory zone
-
-  # Rules applicable to an airspace volume
-  rules: &rules
-    type: array
-    items:
-      type: string
-      enum:
-        - LOA       # Letter of agreement
-        - NOSSR     # Non-SSR area
-        - RAZ       # Radio advisory zone
-        - RMZ       # Radio mandatory zone
-        - SI        # Statutary Instrument
-        - TRA       # Temporary reserved area
-        - TMZ       # Transponder mandatory zone
-
-    additionalItems: false
-    minItems: 1
-
-  # Military/civil operations
-  control: &control
-    type: string
-    enum:
-      - CIVIL
-      - MILITARY
-      - JOINT
-
-  # Latitude/longitude tuple
-  latlon: &latlon
-    type: string
-    pattern: ^[0-9]{6}[NS] [01][0-9]{6}[EW]$
-
-    additionalItems: false
+  #--------------------------------------------------------------------
+  # Volume boundary definitions
 
   # Circle or arc radius
   radius: &radius
@@ -97,9 +103,7 @@ definitions:
     properties:
       centre: *latlon
       radius: *radius
-
     required: [centre, radius]
-    additionalProperties: false
 
   # Arc boundary segment
   arc: &arc
@@ -109,18 +113,14 @@ definitions:
       dir:
         type: string
         enum: [cw, ccw]
-
       radius: *radius
       to: *latlon
-
     required: [centre, dir, radius, to]
-    additionalProperties: false
 
   # Line boundary segment
   line: &line
     type: array
     items: *latlon
-    additionalItems: false
     minItems: 1
 
   # Boundary segment selection
@@ -130,17 +130,15 @@ definitions:
       arc: *arc
       circle: *circle
       line: *line
-
     minProperties: 1
     maxProperties: 1
-    additionalProperties: false
 
+  #--------------------------------------------------------------------
   # Airspace volume with upper limit, lower limit and boundary
+
   volume: &volume
     type: object
     properties:
-      annotations: *annotations
-
       boundary:
         type: array
         items: *boundary_segment
@@ -154,18 +152,13 @@ definitions:
         # Ground, or referenced to standard pressure or MSL
         pattern: ^(GND|FL[0-9]{2,3}|[0-9]{1,5}[ ](m|ft))$
 
+      notes: *notes
+
       # Aggregated with rules from parent airspace
       rules: *rules
 
       # Indicates order of aggregation
-      seqnum:
-        type: integer
-        minimum: 1
-
-      # Optional name suffix for this volume
-      suffix:
-        <<: *name
-        minLength: 1
+      seqno: *seqno
 
       upper:
         type: string
@@ -173,70 +166,125 @@ definitions:
         pattern: ^(FL[0-9]{2,3}|[0-9]{1,5}[ ](m|ft))$
 
     required: [lower, upper, boundary]
-    additionalProperties: false
 
+  #--------------------------------------------------------------------
   # Airspace region, consisting of one or more airspace volumes
+
   airspace: &airspace
     type: object
     properties:
-      annotations: *annotations
-
       # Overriden by class in child volume
       class: *class
 
       # Optional, assumed JOINT if not specified
-      control: *control
+      controltype: *controltype
 
-      # Speficied if feature type is OTHER or D_OTHER
+      # Array of airspace volumes
+      geometry: &geometry
+        type: array
+        items: *volume
+        minItems: 1
+
+      # Only applicable if feature type is OTHER or D_OTHER
       localtype: *localtype
+
+      # Airspace name, *MUST BE UNIQUE*
+      name:
+        <<: *name
+        minLength: 2
+
+      notes: *notes
+
+      # Aggregated with rules in child volumes
+      rules: *rules
+
+      type: *type
+
+    required: [name, geometry, type]
+
+  #--------------------------------------------------------------------
+  # Letter of agreement (LoA)
+
+  # LoA airspace, plus associated modifications to existing airspace
+  # volumes
+  airspace_mod: &airspace_mod
+    type: object
+    properties:
+      # Airspace name and seqno of volume to be modified
+      name: *name
+      seqno: *seqno
+
+      # Replacement volumes (can be null)
+      volumes:
+        type: array
+        items: *volume
+
+  # LoA area consists of the LoA airspace plus modifications to existing
+  # airspace volumes
+  loa_area: &loa_area
+    type: object
+    properties:
+      # Airspace (with one or more new LoA volumes)
+      airspace: *airspace
+
+      # Existing airspace volumes to be modified or deleted
+      mods:
+        type: array
+        items: *airspace_mod
+
+  # Letter of Agreement (LoA)
+  loa: &loa
+    type: object
+    properties:
+      # LoA can contain multiple areas
+      areas:
+        type: array
+        items: *loa_area
+        minItems: 1
 
       name:
         <<: *name
         minLength: 2
 
-      # Aggregated with rules in child volumes
-      rules: *rules
+      notes: *notes
 
-      shape:
-        type: array
-        items: *volume
-        minItems: 1
+    required: [name, areas]
 
-      type: *type
+  #--------------------------------------------------------------------
+  # Release header
 
-    required: [name, shape, type]
-    additionalProperties: false
-
-  # Header
-  header: &header
+  release: &release
     type: object
     properties:
       # Airspace AIRAC release date
       airac_date:
-        format: date
-
-      author:
         type: string
-      email:
-        format: email
+        format: date-time
 
       # Data release timestamp
       release_timestamp:
+        type: string
         format: date-time
 
-      # Airspace schema version
+      # Schema version
       schema_version:
         type: integer
+        minimum: 1
+        maximum: 1
 
-    required: [airac_date, author, email, release_timestamp, schema_version]
+    required: [airac_date, release_timestamp, schema_version]
     addtionalProperties: false
 
 type: object
 properties:
-  header: *header
+  release: *release
   airspace:
     type: array
     items: *airspace
+    minItems: 1
+  loa:
+    type: array
+    items: *loa
 
-required: [header, airspace]
+required: [release, airspace]
 addtionalProperties: false
