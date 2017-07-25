@@ -219,7 +219,9 @@ definitions:
         type: array
         items: *volume
 
-  # LoA area consists of the LoA airspace plus modifications to existing
+    required: [name, seqno, volumes]
+
+  # LoA area consists of the LoA airspace plus replacements for existing
   # airspace volumes
   loa_area: &loa_area
     type: object
@@ -228,9 +230,11 @@ definitions:
       airspace: *airspace
 
       # Existing airspace volumes to be modified or deleted
-      mods:
+      replaced:
         type: array
         items: *airspace_mod
+
+    required: [airspace, replaced]
 
   # Letter of Agreement (LoA)
   loa: &loa
@@ -273,7 +277,6 @@ definitions:
         maximum: 1
 
     required: [airac_date, release_timestamp, schema_version]
-    addtionalProperties: false
 
 type: object
 properties:
