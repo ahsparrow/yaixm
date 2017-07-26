@@ -3,7 +3,7 @@ import json
 import sys
 
 from .helpers import load, validate
-from .openair import convert as openair
+from .openair import convert
 
 def check():
   parser = argparse.ArgumentParser()
@@ -36,7 +36,7 @@ def openair():
   airspace = load(args.airspace_file)
 
   # Convert to openair
-  oa = openair(airspace)
+  oa = convert(airspace)
 
   # Add DOS line endings
   oa.append("")
