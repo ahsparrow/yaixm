@@ -15,7 +15,7 @@ def check():
   args = parser.parse_args()
 
   # Validate and write any errors to stderr
-  e = validate(airspace)
+  e = validate(args.airspace)
   if e:
     print(e, file=sys.stderr)
     sys.exit(1)
