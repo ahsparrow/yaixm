@@ -131,7 +131,7 @@ def convert(airspace,
             ffunc=default_filter, nfunc=default_name, cfunc=default_class):
   openair = []
   for feature in airspace:
-    for volume in feature['shape']:
+    for volume in feature['geometry']:
       if ffunc(feature, volume):
         do_class(openair, cfunc(feature, volume))
         do_name(openair, nfunc(feature, volume))
