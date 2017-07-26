@@ -18,7 +18,7 @@ def check():
   # Validate and write any errors to stderr
   e = validate(airspace)
   if e:
-    print(e, file=sys.stderr)
+    print(e.message, file=sys.stderr)
     sys.exit(1)
 
 def openair():
