@@ -2,8 +2,6 @@ import argparse
 import json
 import sys
 
-import yaml
-
 from .helpers import load, validate
 from .openair import convert as openair
 
@@ -14,8 +12,11 @@ def check():
                       type=argparse.FileType("r"), default=sys.stdin)
   args = parser.parse_args()
 
+  # Load airspace
+  airspace = load(args.airspace_file)
+
   # Validate and write any errors to stderr
-  e = validate(args.airspace)
+  e = validate(airspace)
   if e:
     print(e, file=sys.stderr)
     sys.exit(1)
