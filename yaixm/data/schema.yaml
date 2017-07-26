@@ -290,5 +290,4 @@ properties:
     items: *loa
     minItems: 1
 
-required: [release, airspace]
-addtionalProperties: false
+required: [airspace]
