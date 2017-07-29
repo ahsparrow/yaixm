@@ -18,3 +18,12 @@
 from .helpers import load, validate
 from .openair import convert as openair
 
+# Property order for pretty printing (follows order in AIP)
+PPRINT_PROP_LIST = [
+    "airspace",
+    "seqno", "upper", "lower",
+    "name", "type", "localtype", "class", "control", "rules",
+    "geometry", "boundary", "notes",
+    "line", "circle", "arc",
+    "dir", "radius", "centre", "to"
+]
