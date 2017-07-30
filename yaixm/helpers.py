@@ -25,6 +25,17 @@ try:
 except ImportError:
     from yaml import Loader
 
+# Property order for pretty printing (follows order in AIP)
+PPRINT_PROP_LIST = [
+    "airspace",
+    "seqno", "upper", "lower",
+    "name", "type", "localtype", "class", "control", "rules",
+    "geometry", "boundary", "notes",
+    "line", "circle", "arc",
+    "dir", "radius", "centre", "to"
+]
+
+# Load data from either YAML or JSON
 def load(stream, json=False):
     if json:
         if hasattr(stream, 'read'):
@@ -36,6 +47,7 @@ def load(stream, json=False):
 
     return data
 
+# Check airspace against schema
 def validate(airspace):
     schema = load(pkg_resources.resource_string(__name__, "data/schema.yaml"))
 
@@ -46,3 +58,9 @@ def validate(airspace):
         return e
 
     return None
+
+# Representer to list properties in fixed order
+def ordered_map_representer(dumper, data):
+    return yaml.dumper.represent_mapping(
+            'tag:yaml.org,2002:map',
+            sorted(data.items(), key=lambda t: PPRINT_PROP_LIST.index(t[0])))
