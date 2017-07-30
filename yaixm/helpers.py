@@ -61,6 +61,6 @@ def validate(airspace):
 
 # Representer to list properties in fixed order
 def ordered_map_representer(dumper, data):
-    return yaml.dumper.represent_mapping(
+    return dumper.represent_mapping(
             'tag:yaml.org,2002:map',
             sorted(data.items(), key=lambda t: PPRINT_PROP_LIST.index(t[0])))
