@@ -128,8 +128,12 @@ def do_boundary(openair, boundary):
             point = segment['arc']['to']
 
     # Close the polygon
-    if 'line' in boundary[0] and 'line' in boundary[-1]:
-        do_point(openair, boundary[0]['line'][0])
+    if 'line' in boundary[0]:
+        if 'line' in boundary[-1]:
+            do_point(openair, boundary[0]['line'][0])
+        elif 'arc' in boundary[-1]:
+          if boundary[0]['line'][0] != boundary[-1]['arc']['to']:
+              do_point(openair, boundary[0]['line'][0]
 
 # Convert to array of openair records
 def convert(airspace,
