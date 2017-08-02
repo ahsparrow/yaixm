@@ -67,11 +67,16 @@ def do_name(openair, name):
 
 # Upper and lower levels
 def do_levels(openair, volume):
-    openair.append("AH %s" % volume['upper'])
-    if volume['lower'] == "GND":
-        openair.append("AL SFC")
-    else:
-        openair.append("AL %s" % volume['lower'])
+    def level_str(level):
+      if level == "GND":
+          return "SFC"
+      elif level.endswith('ft')
+          return level[:-3] + "ALT"
+      else:
+          return level
+
+    openair.append("AL %s" % level_str(volume['lower']))
+    openair.append("AH %s" % level_str(volume['upper']))
 
 # Centre of arc or circle
 def do_centre(openair, latlon):
