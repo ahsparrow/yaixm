@@ -133,7 +133,7 @@ def do_boundary(openair, boundary):
             do_point(openair, boundary[0]['line'][0])
         elif 'arc' in boundary[-1]:
           if boundary[0]['line'][0] != boundary[-1]['arc']['to']:
-              do_point(openair, boundary[0]['line'][0]
+              do_point(openair, boundary[0]['line'][0])
 
 # Convert to array of openair records
 def convert(airspace,
