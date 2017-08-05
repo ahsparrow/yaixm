@@ -1,6 +1,6 @@
 id: http://freeflight.org.uk/yaixm-schema
 
-schema: http://json-schema.org/draft-04/schema#
+$schema: http://json-schema.org/draft-04/schema#
 
 definitions:
   #--------------------------------------------------------------------
@@ -104,6 +104,7 @@ definitions:
       centre: *latlon
       radius: *radius
     required: [centre, radius]
+    additionalProperties: False
 
   # Arc boundary segment
   arc: &arc
@@ -116,6 +117,7 @@ definitions:
       radius: *radius
       to: *latlon
     required: [centre, dir, radius, to]
+    additionalProperties: False
 
   # Line boundary segment
   line: &line
@@ -132,6 +134,7 @@ definitions:
       line: *line
     minProperties: 1
     maxProperties: 1
+    additionalProperties: False
 
   #--------------------------------------------------------------------
   # Airspace volume with upper limit, lower limit and boundary
@@ -166,11 +169,12 @@ definitions:
         pattern: ^(FL[0-9]{2,3}|[0-9]{1,5}[ ](m|ft))$
 
     required: [lower, upper, boundary]
+    additionalProperties: False
 
   #--------------------------------------------------------------------
-  # Airspace region, consisting of one or more airspace volumes
+  # Airspace feature, consisting of one or more airspace volumes
 
-  airspace: &airspace
+  feature: &feature
     type: object
     properties:
       # Overriden by class in child volume
@@ -188,7 +192,7 @@ definitions:
       # Only applicable if feature type is OTHER or D_OTHER
       localtype: *localtype
 
-      # Airspace name, *MUST BE UNIQUE*
+      # Airspace name
       name:
         <<: *name
         minLength: 2
@@ -201,17 +205,29 @@ definitions:
       type: *type
 
     required: [name, geometry, type]
+    additionalProperties: False
 
   #--------------------------------------------------------------------
   # Letter of agreement (LoA)
 
-  # LoA airspace, plus associated modifications to existing airspace
-  # volumes
-  airspace_mod: &airspace_mod
+  # Modifications to existing airspace volumes
+  mod_volume: &mod_volume
     type: object
     properties:
-      # Airspace name and seqno of volume to be modified
-      name: *name
+      # Airspace feature volume to be modified
+      feature:
+        type: object
+        properties:
+          name: *name
+          type: *type
+          localtype: *localtype
+
+        oneOf:
+          - required: [name, type]
+          - required: [name, localtype]
+
+        additionalProperties: False
+
       seqno: *seqno
 
       # Replacement volumes (can be null)
@@ -219,31 +235,33 @@ definitions:
         type: array
         items: *volume
 
-    required: [name, seqno, volumes]
+    required: [feature, volumes]
+    additionalProperties: False
 
-  # LoA area consists of the LoA airspace plus replacements for existing
-  # airspace volumes
-  loa_area: &loa_area
+  # LoA airspace consists of the LoA airspace feature plus replacement
+  # (or deleted) airspace volumes
+  loa_airspace: &loa_airspace
     type: object
     properties:
-      # Airspace (with one or more new LoA volumes)
-      airspace: *airspace
+      # Airspace feature (with one or more volumes)
+      feature: *feature
 
       # Existing airspace volumes to be modified or deleted
-      replaced:
+      mod_volumes:
         type: array
-        items: *airspace_mod
+        items: *mod_volume
 
-    required: [airspace, replaced]
+    required: [feature, mod_volumes]
+    additionalProperties: False
 
   # Letter of Agreement (LoA)
   loa: &loa
     type: object
     properties:
-      # LoA can contain multiple areas
-      areas:
+      # LoA can contain multiple airspace features
+      airspace:
         type: array
-        items: *loa_area
+        items: *loa_airspace
         minItems: 1
 
       name:
@@ -252,7 +270,8 @@ definitions:
 
       notes: *notes
 
-    required: [name, areas]
+    required: [name, airspace]
+    additionalProperties: False
 
   #--------------------------------------------------------------------
   # Release header
@@ -277,13 +296,14 @@ definitions:
         maximum: 1
 
     required: [airac_date, release_timestamp, schema_version]
+    additionalProperties: False
 
 type: object
 properties:
   release: *release
   airspace:
     type: array
-    items: *airspace
+    items: *feature
     minItems: 1
   loa:
     type: array
@@ -291,3 +311,4 @@ properties:
     minItems: 1
 
 required: [airspace]
+additionalProperties: False
