@@ -214,28 +214,28 @@ definitions:
   mod_volume: &mod_volume
     type: object
     properties:
-      # Airspace feature volume to be modified
-      feature:
+      # Airspace volume to be modified
+      volume_id:
         type: object
         properties:
           name: *name
           type: *type
           localtype: *localtype
+          seqno: *seqno
 
         oneOf:
-          - required: [name, type]
-          - required: [name, localtype]
+          - required: [name, type, seqno]
+          - required: [name, localtype, seqno]
 
         additionalProperties: False
 
-      seqno: *seqno
 
       # Replacement volumes (can be null)
-      volumes:
+      geometry:
         type: array
         items: *volume
 
-    required: [feature, volumes]
+    required: [volume_id, geometry]
     additionalProperties: False
 
   # LoA airspace consists of the LoA airspace feature plus replacement
@@ -247,11 +247,11 @@ definitions:
       feature: *feature
 
       # Existing airspace volumes to be modified or deleted
-      mod_volumes:
+      mods:
         type: array
         items: *mod_volume
 
-    required: [feature, mod_volumes]
+    required: [feature, mods]
     additionalProperties: False
 
   # Letter of Agreement (LoA)

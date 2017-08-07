@@ -27,12 +27,21 @@ except ImportError:
 
 # Property order for pretty printing (follows order in AIP)
 PPRINT_PROP_LIST = [
-    "airspace",
-    "seqno", "upper", "lower",
-    "name", "type", "localtype", "class", "control", "rules",
-    "geometry", "boundary", "notes",
-    "line", "circle", "arc",
-    "dir", "radius", "centre", "to"
+    "name", "type", "localtype",
+
+    "release", "airspace", "loa",
+
+    "feature", "mods",
+    "volume_id",
+
+    "seqno", "upper", "lower", "class", "rules", "boundary",
+
+    "controltype", "geometry",
+
+    "circle", "arc", "line",
+    "dir", "radius", "centre", "to",
+
+    "notes"
 ]
 
 # Load data from either YAML or JSON

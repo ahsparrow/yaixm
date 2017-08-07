@@ -47,10 +47,9 @@ TEST_AIRSPACE = {
                         }]
                     }]
                 },
-                "mod_volumes": [{
-                    "feature": {"name": "FOO", "localtype": "DZ"},
-                    "seqno": 1,
-                    "volumes": []
+                "mods": [{
+                    "volume_id": {"name": "FOO", "localtype": "DZ", "seqno": 1},
+                    "geometry": []
                 }]
             }]
         }
