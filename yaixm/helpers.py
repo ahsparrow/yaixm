@@ -15,7 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with yaixm.  If not, see <http://www.gnu.org/licenses/>.
 
+from copy import deepcopy
 import json as _json
+import logging
 
 import jsonschema
 import pkg_resources
@@ -57,11 +59,11 @@ def load(stream, json=False):
     return data
 
 # Check airspace against schema
-def validate(airspace):
+def validate(yaxim):
     schema = load(pkg_resources.resource_string(__name__, "data/schema.yaml"))
 
     try:
-        jsonschema.validate(airspace, schema,
+        jsonschema.validate(aixm, schema,
                             format_checker=jsonschema.FormatChecker())
     except jsonschema.exceptions.ValidationError as e:
         return e
@@ -73,3 +75,55 @@ def ordered_map_representer(dumper, data):
     return dumper.represent_mapping(
             'tag:yaml.org,2002:map',
             sorted(data.items(), key=lambda t: PPRINT_PROP_LIST.index(t[0])))
+
+def find_feature(airspace, id):
+    def f_match(id, feature):
+        if feature['name'] == id['name']:
+            if 'localtype' in id:
+                return feature.get('localtype') == id['localtype']
+            else:
+                return feature['type'] == id.get('type')
+        else:
+            return False
+
+    match = [f for f in airspace if f_match(id, f)]
+    if len(match) > 1:
+        logging.warning("Multiple match for %s" % str(id))
+
+    if match:
+        return match[0]
+    else:
+        return None
+
+# Merge LoAs into airspace and return merged copy
+def merge_loa(airspace, loas):
+    merge_airspace = deepcopy(airspace)
+
+    for loa in loas:
+        # Add LoA airspace
+        for loa_airspace in loa['airspace']:
+            merge_airspace.append(loa_airspace['feature'])
+
+            # Modify existing airspace volumes
+            for mod in loa_airspace['mods']:
+                vol_id = mod['volume_id']
+
+                # Find feature
+                feature = find_feature(merge_airspace, vol_id)
+                if feature is None:
+                    logging.error("Can't find feature %s" % str(vol_id))
+                    continue
+
+                # Append new volumes
+                for vol in mod['geometry']:
+                    feature['geometry'].append(vol)
+
+                # Delete the old volume
+                vol = [f for f in feature['geometry']
+                       if f.get('seqno') == vol_id['seqno']]
+                if vol:
+                    feature['geometry'].remove(vol[0])
+                else:
+                    logging.warning("Can't find volume %s" % str(vol_id))
+
+    return merge_airspace

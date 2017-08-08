@@ -15,6 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with yaixm.  If not, see <http://www.gnu.org/licenses/>.
 
-from .helpers import load, validate, ordered_map_representer
+from .helpers import load, validate, ordered_map_representer, merge_loa
 from .openair import convert as openair
 
