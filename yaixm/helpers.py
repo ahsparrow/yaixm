@@ -63,7 +63,7 @@ def validate(yaxim):
     schema = load(pkg_resources.resource_string(__name__, "data/schema.yaml"))
 
     try:
-        jsonschema.validate(aixm, schema,
+        jsonschema.validate(yaixm, schema,
                             format_checker=jsonschema.FormatChecker())
     except jsonschema.exceptions.ValidationError as e:
         return e
