@@ -223,7 +223,7 @@ definitions:
           localtype: *localtype
           seqno: *seqno
 
-        oneOf:
+        anyOf:
           - required: [name, type, seqno]
           - required: [name, type]
           - required: [name, localtype, seqno]
