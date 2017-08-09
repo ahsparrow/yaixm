@@ -59,7 +59,7 @@ def load(stream, json=False):
     return data
 
 # Check airspace against schema
-def validate(yaxim):
+def validate(yaixm):
     schema = load(pkg_resources.resource_string(__name__, "data/schema.yaml"))
 
     try:
