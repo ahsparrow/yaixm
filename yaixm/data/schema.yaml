@@ -225,7 +225,9 @@ definitions:
 
         oneOf:
           - required: [name, type, seqno]
+          - required: [name, type]
           - required: [name, localtype, seqno]
+          - required: [name, localtype]
 
         additionalProperties: False
 
