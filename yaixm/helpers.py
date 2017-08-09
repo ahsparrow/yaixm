@@ -95,35 +95,44 @@ def find_feature(airspace, id):
     else:
         return None
 
-# Merge LoAs into airspace and return merged copy
+# Merge LoAs into a copy of airspace and return merged copy
 def merge_loa(airspace, loas):
     merge_airspace = deepcopy(airspace)
 
     for loa in loas:
-        # Add LoA airspace
+        # LoA consists of one or more new airspace features
         for loa_airspace in loa['airspace']:
+            # Add new LoA airspace feature
             merge_airspace.append(loa_airspace['feature'])
 
-            # Modify existing airspace volumes
+            # Each new feature modifies zero or more existing volumes
             for mod in loa_airspace['mods']:
                 vol_id = mod['volume_id']
 
-                # Find feature
+                # Find feature containing volume to be replaced
                 feature = find_feature(merge_airspace, vol_id)
                 if feature is None:
                     logging.error("Can't find feature %s" % str(vol_id))
                     continue
 
-                # Append new volumes
+                # Delete the old volume
+                if 'seqno' not in vol_id:
+                    # If seqno not specified only delete if single volume
+                    if len(feature['geometry']) == 1:
+                        feature['geometry'] = []
+                    else:
+                        logging.error("Seqno required for %s" % str(vol_id))
+                else:
+                    # Search and destroy volume
+                    vol = [f for f in feature['geometry']
+                           if f.get('seqno') == vol_id['seqno']]
+                    if vol:
+                        feature['geometry'].remove(vol[0])
+                    else:
+                        logging.warning("Can't find volume %s" % str(vol_id))
+
+                # Append (zero or more) new volumes
                 for vol in mod['geometry']:
                     feature['geometry'].append(vol)
-
-                # Delete the old volume
-                vol = [f for f in feature['geometry']
-                       if f.get('seqno') == vol_id['seqno']]
-                if vol:
-                    feature['geometry'].remove(vol[0])
-                else:
-                    logging.warning("Can't find volume %s" % str(vol_id))
 
     return merge_airspace
