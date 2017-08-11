@@ -217,50 +217,22 @@ definitions:
   #--------------------------------------------------------------------
   # Letter of agreement (LoA)
 
-  # Modifications to existing airspace volumes
-  mod_volume: &mod_volume
-    type: object
-    properties:
-      # Airspace feature
-      feature_id:
-        type: object
-        properties:
-          name: *name
-          type: *type
-          localtype: *localtype
-        anyOf:
-          - required: [name, type]
-          - required: [name, localtype]
-        additionalProperties: False
-
-      # New volumes
-      geometry:
-        type: array
-        items: *volume
-        minItems: 1
-
-    required: [feature_id, geometry]
-    additionalProperties: False
-
-  # LoA airspace consists of the LoA airspace feature plus replacement
-  # airspace volumes
+  # LoA airspace consists of new LoA airspace feature plus possible
+  # modifications to existing features
   loa_airspace: &loa_airspace
     type: object
     properties:
-      # Airspace feature (with one or more volumes)
-      feature: *feature
-
-      # Modified volumes to be added to existing features
-      mod_volumes:
+      # New LoA feature or additions to exsting feature
+      add:
         type: array
-        items: *mod_volume
+        items: *feature
 
       # Volumes to be replaced
-      del_volumes:
+      delete:
         type: array
         items: *id
 
-    required: [feature, mod_volumes, del_volumes]
+    required: [add]
     additionalProperties: False
 
   # Letter of Agreement (LoA)

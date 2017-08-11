@@ -27,7 +27,7 @@ TEST_AIRSPACE = {
     "loa": [{
         "name": "LOA FOO",
         "airspace": [{
-            "feature": {
+            "add": [{
                 "name": "TEST BOX",
                 "type": "CTR",
                 "geometry": [{
@@ -41,11 +41,9 @@ TEST_AIRSPACE = {
                     }]
                 }]
             },
-            "mod_volumes": [{
-                "feature_id": {
-                    "name": "FOONAR",
-                    "type": "ATZ"
-                },
+            {
+                "name": "FOONAR",
+                "type": "ATZ",
                 "geometry": [{
                     "lower": "FL100",
                     "upper": "FL200",
@@ -57,7 +55,7 @@ TEST_AIRSPACE = {
                     }]
                 }]
             }],
-            "del_volumes": ["$foo", "$bar"]
+            "delete": ["$foo", "$bar"]
         }]
     }]
 }

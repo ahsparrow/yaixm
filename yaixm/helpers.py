@@ -33,8 +33,7 @@ PPRINT_PROP_LIST = [
 
     "release", "airspace", "loa",
 
-    "feature", "mod_volumes", "del_volumes",
-    "feature_id",
+    "feature", "add", "delete",
 
     "id", "seqno", "upper", "lower", "class", "rules", "boundary",
 
