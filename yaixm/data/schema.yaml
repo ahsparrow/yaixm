@@ -217,12 +217,12 @@ definitions:
   #--------------------------------------------------------------------
   # Letter of agreement (LoA)
 
-  # LoA airspace consists of new LoA airspace feature plus possible
+  # LoA airspace area consists of new LoA airspace feature plus possible
   # modifications to existing features
-  loa_airspace: &loa_airspace
+  loa_area: &loa_area
     type: object
     properties:
-      # New LoA feature or additions to exsting feature
+      # New LoA feature plus additions to exsting features
       add:
         type: array
         items: *feature
@@ -232,26 +232,26 @@ definitions:
         type: array
         items: *id
 
-    required: [add]
+      name: *name
+      notes: *notes
+
+    required: [name, add]
     additionalProperties: False
 
   # Letter of Agreement (LoA)
   loa: &loa
     type: object
     properties:
-      # LoA can contain multiple airspace features
-      airspace:
+      # LoA can contain multiple airspace areas
+      areas:
         type: array
-        items: *loa_airspace
+        items: *loa_area
         minItems: 1
 
-      name:
-        <<: *name
-        minLength: 2
-
+      name: *name
       notes: *notes
 
-    required: [name, airspace]
+    required: [name, areas]
     additionalProperties: False
 
   #--------------------------------------------------------------------

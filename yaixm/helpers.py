@@ -33,7 +33,9 @@ PPRINT_PROP_LIST = [
 
     "release", "airspace", "loa",
 
-    "feature", "add", "delete",
+    "areas",
+
+    "add", "delete",
 
     "id", "seqno", "upper", "lower", "class", "rules", "boundary",
 

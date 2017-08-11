@@ -1,6 +1,8 @@
 import json
 import tempfile
 
+import yaml
+
 import yaixm
 
 TEST_AIRSPACE = {
@@ -26,7 +28,8 @@ TEST_AIRSPACE = {
     }],
     "loa": [{
         "name": "LOA FOO",
-        "airspace": [{
+        "areas": [{
+            "name": "FOO-1",
             "add": [{
                 "name": "TEST BOX",
                 "type": "CTR",
@@ -140,3 +143,8 @@ def test_openair_class():
     oa = yaixm.openair(input['airspace'], cfunc=class_func)
 
     assert oa[0] == "AC A"
+
+def test_representer():
+    input = dict(TEST_AIRSPACE)
+    yaml.add_representer(dict, yaixm.ordered_map_representer)
+    yaml.dump(input)
