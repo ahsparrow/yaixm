@@ -9,51 +9,57 @@ TEST_AIRSPACE = {
         'release_timestamp': "2017-05-11T07:55:53+00:00",
         'schema_version': 1
     },
-    'airspace': [
-        {
-            'name': "BENSON",
-            'geometry': [
-                {
-                    'boundary': [
-                        {
-                            'circle': {
-                                'centre': "513654N 0010545W",
-                                'radius': "2 nm"
-                            }
+    'airspace': [{
+        'name': "BENSON",
+        'geometry': [{
+            'id': '$benson',
+            'boundary': [{
+                'circle': {
+                    'centre': "513654N 0010545W",
+                    'radius': "2 nm"
+                 }
+            }],
+            'lower': "GND",
+            'upper': "2203 ft"
+        }],
+        "type": "ATZ"
+    }],
+    "loa": [{
+        "name": "LOA FOO",
+        "airspace": [{
+            "feature": {
+                "name": "TEST BOX",
+                "type": "CTR",
+                "geometry": [{
+                    "lower": "GND",
+                    "upper": "1000 ft",
+                    "boundary" : [{
+                        'circle': {
+                            'centre': "513654N 0010545W",
+                            'radius': "2 nm"
                         }
-                    ],
-                    'lower': "GND",
-                    'upper': "2203 ft"
-                }
-            ],
-            "type": "ATZ"
-        }
-    ],
-    "loa": [
-        {
-            "name": "LOA FOO",
-            "airspace": [{
-                "feature": {
-                    "name": "TEST BOX",
-                    "type": "CTR",
-                    "geometry": [{
-                        "lower": "GND",
-                        "upper": "1000 ft",
-                        "boundary" : [{
-                            'circle': {
-                                'centre': "513654N 0010545W",
-                                'radius': "2 nm"
-                            }
-                        }]
                     }]
-                },
-                "mods": [{
-                    "volume_id": {"name": "FOO", "localtype": "DZ", "seqno": 1},
-                    "geometry": []
                 }]
-            }]
-        }
-    ]
+            },
+            "mod_volumes": [{
+                "feature_id": {
+                    "name": "FOONAR",
+                    "type": "ATZ"
+                },
+                "geometry": [{
+                    "lower": "FL100",
+                    "upper": "FL200",
+                    "boundary" : [{
+                        'circle': {
+                            'centre': "513654N 0010545W",
+                            'radius': "2 nm"
+                        }
+                    }]
+                }]
+            }],
+            "del_volumes": ["$foo", "$bar"]
+        }]
+    }]
 }
 
 def create_tmp_text_file(data):

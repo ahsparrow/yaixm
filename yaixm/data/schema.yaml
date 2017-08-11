@@ -89,6 +89,11 @@ definitions:
       - R           # Restricted area
       - TMA         # Terminal control area
 
+  # Volume ID, used for volumes affected by LoAs
+  id: &id
+    type: string
+    pattern: ^\$[a-z][\-/0-9a-z]*$
+
   #--------------------------------------------------------------------
   # Volume boundary definitions
 
@@ -149,6 +154,8 @@ definitions:
 
       # Overrides class in parent airspace
       class: *class
+
+      id: *id
 
       lower:
         type: string
@@ -214,46 +221,46 @@ definitions:
   mod_volume: &mod_volume
     type: object
     properties:
-      # Airspace volume to be modified
-      volume_id:
+      # Airspace feature
+      feature_id:
         type: object
         properties:
           name: *name
           type: *type
           localtype: *localtype
-          seqno: *seqno
-
         anyOf:
-          - required: [name, type, seqno]
           - required: [name, type]
-          - required: [name, localtype, seqno]
           - required: [name, localtype]
-
         additionalProperties: False
 
-
-      # Replacement volumes (can be null)
+      # New volumes
       geometry:
         type: array
         items: *volume
+        minItems: 1
 
-    required: [volume_id, geometry]
+    required: [feature_id, geometry]
     additionalProperties: False
 
   # LoA airspace consists of the LoA airspace feature plus replacement
-  # (or deleted) airspace volumes
+  # airspace volumes
   loa_airspace: &loa_airspace
     type: object
     properties:
       # Airspace feature (with one or more volumes)
       feature: *feature
 
-      # Existing airspace volumes to be modified or deleted
-      mods:
+      # Modified volumes to be added to existing features
+      mod_volumes:
         type: array
         items: *mod_volume
 
-    required: [feature, mods]
+      # Volumes to be replaced
+      del_volumes:
+        type: array
+        items: *id
+
+    required: [feature, mod_volumes, del_volumes]
     additionalProperties: False
 
   # Letter of Agreement (LoA)
