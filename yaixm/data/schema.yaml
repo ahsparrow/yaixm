@@ -222,7 +222,12 @@ definitions:
   loa_area: &loa_area
     type: object
     properties:
-      # New LoA feature plus additions to exsting features
+      # New airspace features
+      new:
+        type: array
+        itmes: *feature
+
+      # Additions to exsting features
       add:
         type: array
         items: *feature
@@ -235,7 +240,7 @@ definitions:
       name: *name
       notes: *notes
 
-    required: [name, add]
+    required: [name, new]
     additionalProperties: False
 
   # Letter of Agreement (LoA)
