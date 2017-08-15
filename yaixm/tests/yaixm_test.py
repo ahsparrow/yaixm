@@ -8,7 +8,7 @@ import yaixm
 TEST_AIRSPACE = {
     'release': {
         'airac_date': "2017-05-12",
-        'release_timestamp': "2017-05-11T07:55:53+00:00",
+        'timestamp': "2017-05-11T07:55:53+00:00",
         'schema_version': 1
     },
     'airspace': [{

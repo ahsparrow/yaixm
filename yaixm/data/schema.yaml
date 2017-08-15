@@ -225,7 +225,7 @@ definitions:
       # New airspace features
       new:
         type: array
-        itmes: *feature
+        items: *feature
 
       # Additions to exsting features
       add:
@@ -271,7 +271,7 @@ definitions:
         format: date-time
 
       # Data release timestamp
-      release_timestamp:
+      timestamp:
         type: string
         format: date-time
 
@@ -281,7 +281,7 @@ definitions:
         minimum: 1
         maximum: 1
 
-    required: [airac_date, release_timestamp, schema_version]
+    required: [airac_date, timestamp, schema_version]
     additionalProperties: False
 
 type: object
