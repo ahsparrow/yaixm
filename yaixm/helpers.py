@@ -44,7 +44,9 @@ PPRINT_PROP_LIST = [
     "circle", "arc", "line",
     "dir", "radius", "centre", "to",
 
-    "notes"
+    "airac_date", "timestamp", "schema_version",
+
+    "notes",
 ]
 
 # Load data from either YAML or JSON
@@ -100,40 +102,45 @@ def find_feature(airspace, id):
 def merge_loa(airspace, loas):
     merge_airspace = deepcopy(airspace)
 
+    delete_vol_ids = []
     for loa in loas:
-        # LoA consists of one or more new airspace features
-        for loa_airspace in loa['airspace']:
-            # Add new LoA airspace feature
-            merge_airspace.append(loa_airspace['feature'])
+        for area in loa['areas']:
+            # Add new LoA airspace features
+            for feature in area['new']:
+                merge_airspace.append(feature)
 
-            # Each new feature modifies zero or more existing volumes
-            for mod in loa_airspace['mods']:
-                vol_id = mod['volume_id']
-
+            # Add volumes to existing features
+            for add_feature in area.get('add', []):
                 # Find feature containing volume to be replaced
-                feature = find_feature(merge_airspace, vol_id)
+                feature = find_feature(merge_airspace, add_feature)
                 if feature is None:
                     logging.error("Can't find feature %s" % str(vol_id))
                     continue
 
-                # Delete the old volume
-                if 'seqno' not in vol_id:
-                    # If seqno not specified only delete if single volume
-                    if len(feature['geometry']) == 1:
-                        feature['geometry'] = []
-                    else:
-                        logging.error("Seqno required for %s" % str(vol_id))
-                else:
-                    # Search and destroy volume
-                    vol = [f for f in feature['geometry']
-                           if f.get('seqno') == vol_id['seqno']]
-                    if vol:
-                        feature['geometry'].remove(vol[0])
-                    else:
-                        logging.warning("Can't find volume %s" % str(vol_id))
+                # Append new volumes
+                feature['geometry'].extend(add_feature['geometry'])
 
-                # Append (zero or more) new volumes
-                for vol in mod['geometry']:
-                    feature['geometry'].append(vol)
+            # Make list of volumes to be deleted
+            delete_vol_ids.extend(area.get('delete', []))
+
+    # Delete volumes (and empty features)
+    delete_features = []
+    for feature in merge_airspace:
+        # Get list of volumes to be removed...
+        delete_vols = []
+        for vol in feature['geometry']:
+            if vol.get('id') in delete_vol_ids:
+                delete_vols.append(vol)
+
+        # ... and remove them
+        for dv in delete_vols:
+            feature['geometry'].remove(dv)
+
+        # If no volumes remaining then add feature to the delete list
+        if len(feature['geometry']) == 0:
+            delete_features.append(feature)
+
+    for df in delete_features:
+        merge_airspace.remove(df)
 
     return merge_airspace
