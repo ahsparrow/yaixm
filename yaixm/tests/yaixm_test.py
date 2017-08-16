@@ -14,7 +14,7 @@ TEST_AIRSPACE = {
     'airspace': [{
         'name': "BENSON",
         'geometry': [{
-            'id': '$benson',
+            'id': 'benson',
             'boundary': [{
                 'circle': {
                     'centre': "513654N 0010545W",
@@ -44,12 +44,14 @@ TEST_AIRSPACE = {
                     }]
                 }]
             }],
-            "add": [{
-                "name": "FOONAR",
-                "type": "ATZ",
+            "replace": [{
+                "id": "foobar",
+                "geometry": []
+            }, {
+                "id": "barfoo",
                 "geometry": [{
-                    "lower": "FL100",
-                    "upper": "FL200",
+                    "lower": "GND",
+                    "upper": "1000 ft",
                     "boundary" : [{
                         'circle': {
                             'centre': "513654N 0010545W",
@@ -58,7 +60,6 @@ TEST_AIRSPACE = {
                     }]
                 }]
             }],
-            "delete": ["$foo", "$bar"]
         }]
     }]
 }

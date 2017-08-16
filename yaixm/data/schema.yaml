@@ -19,6 +19,11 @@ definitions:
       - MILITARY
       - JOINT
 
+  # Volume ID, used for volumes affected by LoAs
+  id: &id
+    type: string
+    pattern: ^[a-z][\-/0-9a-z]*$
+
   # Latitude/longitude tuple
   latlon: &latlon
     type: string
@@ -88,11 +93,6 @@ definitions:
       - P           # Prohibited area
       - R           # Restricted area
       - TMA         # Terminal control area
-
-  # Volume ID, used for volumes affected by LoAs
-  id: &id
-    type: string
-    pattern: ^[a-z][\-/0-9a-z]*$
 
   #--------------------------------------------------------------------
   # Volume boundary definitions
@@ -217,6 +217,19 @@ definitions:
   #--------------------------------------------------------------------
   # Letter of agreement (LoA)
 
+  # Volume replacements, substitures existing volume with none or more
+  # new volmes
+  volume_replacement: &volume_replacement
+    type: object
+    properties:
+      id: *id
+      geometry:
+        <<: *geometry
+        minItems: 0
+
+    required: [id, geometry]
+    additionalProperties: False
+
   # LoA airspace area consists of new LoA airspace feature plus possible
   # modifications to existing features
   loa_area: &loa_area
@@ -227,18 +240,13 @@ definitions:
         type: array
         items: *feature
 
-      # Additions to exsting features
-      add:
-        type: array
-        items: *feature
-
-      # Volumes to be replaced
-      delete:
-        type: array
-        items: *id
-
       name: *name
       notes: *notes
+
+      # Replacments for existing volumes
+      replace:
+        type: array
+        items: *volume_replacement
 
     required: [name, new]
     additionalProperties: False
