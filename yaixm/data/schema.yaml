@@ -236,7 +236,7 @@ definitions:
     type: object
     properties:
       # New airspace features
-      new:
+      add:
         type: array
         items: *feature
 
@@ -248,7 +248,7 @@ definitions:
         type: array
         items: *volume_replacement
 
-    required: [name, new]
+    required: [name, add]
     additionalProperties: False
 
   # Letter of Agreement (LoA)

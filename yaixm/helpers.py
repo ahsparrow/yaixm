@@ -35,7 +35,7 @@ PPRINT_PROP_LIST = [
 
     "areas",
 
-    "new", "replace",
+    "add", "replace",
 
     "id", "seqno", "upper", "lower", "class", "rules", "boundary",
 

@@ -30,7 +30,7 @@ TEST_AIRSPACE = {
         "name": "LOA FOO",
         "areas": [{
             "name": "FOO-1",
-            "new": [{
+            "add": [{
                 "name": "TEST BOX",
                 "type": "CTR",
                 "geometry": [{
