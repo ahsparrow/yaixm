@@ -304,5 +304,8 @@ properties:
     items: *loa
     minItems: 1
 
-required: [airspace]
+anyOf:
+    - required: [airspace]
+    - required: [loa]
+
 additionalProperties: False
