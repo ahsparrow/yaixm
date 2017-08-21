@@ -98,49 +98,41 @@ def find_feature(airspace, id):
     else:
         return None
 
+# Get volume and associated feature for given volume ID
+def find_volume(airspace, vid):
+    for feature in airspace:
+        for volume in feature['geometry']:
+            if volume.get('id') == vid:
+                return volume, feature
+
+    return None, None
+
 # Merge LoAs into a copy of airspace and return merged copy
 def merge_loa(airspace, loas):
     merge_airspace = deepcopy(airspace)
 
-    delete_vol_ids = []
+    replace_vol_ids = []
     for loa in loas:
         for area in loa['areas']:
             # Add new LoA airspace features
-            for feature in area['new']:
-                merge_airspace.append(feature)
+            merge_airspace.extend(area['add'])
 
-            # Add volumes to existing features
-            for add_feature in area.get('add', []):
-                # Find feature containing volume to be replaced
-                feature = find_feature(merge_airspace, add_feature)
+            # Replace volumes in existing features
+            for replace_vol in area.get('replace', []):
+                # Find volume to be replaced
+                volume, feature = find_volume(merge_airspace,
+                                              replace_vol['id'])
                 if feature is None:
-                    logging.error("Can't find feature %s" % str(vol_id))
                     continue
 
-                # Append new volumes
-                feature['geometry'].extend(add_feature['geometry'])
+                # Delete old volume
+                feature['geometry'].remove(volume)
 
-            # Make list of volumes to be deleted
-            delete_vol_ids.extend(area.get('delete', []))
+                # Append new volumes (maybe null array)
+                feature['geometry'].extend(replace_vol['geometry'])
 
-    # Delete volumes (and empty features)
-    delete_features = []
-    for feature in merge_airspace:
-        # Get list of volumes to be removed...
-        delete_vols = []
-        for vol in feature['geometry']:
-            if vol.get('id') in delete_vol_ids:
-                delete_vols.append(vol)
-
-        # ... and remove them
-        for dv in delete_vols:
-            feature['geometry'].remove(dv)
-
-        # If no volumes remaining then add feature to the delete list
-        if len(feature['geometry']) == 0:
-            delete_features.append(feature)
-
-    for df in delete_features:
-        merge_airspace.remove(df)
+                # Remove feature if no geometry remaining
+                if not feature['geometry']:
+                    merge_airspace.remove(feature)
 
     return merge_airspace
