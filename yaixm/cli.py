@@ -20,7 +20,7 @@ import json
 import sys
 
 from .helpers import load, validate
-from .convert import Openair
+from .convert import Openair, Tnp
 
 def check():
     parser = argparse.ArgumentParser()
@@ -57,7 +57,7 @@ def openair():
     oa = convert.convert(airspace['airspace'])
 
     # Don't accept anything other than ASCII
-    output_oa = output_oa.encode("ascii").decode("ascii")
+    output_oa = oa.encode("ascii").decode("ascii")
 
     args.openair_file.write(output_oa)
 
@@ -80,7 +80,7 @@ def tnp():
     oa = convert.convert(airspace['airspace'])
 
     # Don't accept anything other than ASCII
-    output_oa = output_oa.encode("ascii").decode("ascii")
+    output_oa = oa.encode("ascii").decode("ascii")
 
     args.openair_file.write(output_oa)
 
