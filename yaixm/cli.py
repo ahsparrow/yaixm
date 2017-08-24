@@ -20,7 +20,7 @@ import json
 import sys
 
 from .helpers import load, validate
-from .openair import convert
+from .convert import Openair
 
 def check():
     parser = argparse.ArgumentParser()
@@ -53,11 +53,31 @@ def openair():
     airspace = load(args.airspace_file)
 
     # Convert to openair
-    oa = convert(airspace)
+    convert = Openair()
+    oa = convert.convert(airspace['airspace'])
 
-    # Add DOS line endings
-    oa.append("")
-    output_oa = "\r\n".join(oa)
+    # Don't accept anything other than ASCII
+    output_oa = output_oa.encode("ascii").decode("ascii")
+
+    args.openair_file.write(output_oa)
+
+def tnp():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("airspace_file", nargs="?",
+                        help="YAML airspace file",
+                        type=argparse.FileType("r"), default=sys.stdin)
+    parser.add_argument("tnp_file", nargs="?",
+                        help="TNP output file, stdout if not specified",
+                        type=argparse.FileType("w", encoding="ascii"),
+                        default=sys.stdout)
+    args = parser.parse_args()
+
+    # Load airspace
+    airspace = load(args.airspace_file)
+
+    # Convert to openair
+    convert = Tnp()
+    oa = convert.convert(airspace['airspace'])
 
     # Don't accept anything other than ASCII
     output_oa = output_oa.encode("ascii").decode("ascii")
