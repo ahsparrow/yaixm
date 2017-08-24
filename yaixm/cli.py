@@ -82,7 +82,7 @@ def tnp():
     # Don't accept anything other than ASCII
     output_oa = oa.encode("ascii").decode("ascii")
 
-    args.openair_file.write(output_oa)
+    args.tnp_file.write(output_oa)
 
 def yaml_to_json():
     import argparse
