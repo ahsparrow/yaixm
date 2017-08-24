@@ -7,7 +7,7 @@
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# Airplot is distributed in the hope that it will be useful,
+# yaixm is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
@@ -136,3 +136,11 @@ def merge_loa(airspace, loas):
                     merge_airspace.remove(feature)
 
     return merge_airspace
+
+# Split latitude or longitude string into hemisphere, degrees, minutes and
+# seconds
+def dms(latlon):
+    return {'h': latlon[-1],
+            'd': int(latlon[:-5]),
+            'm': int(latlon[-5:-3]),
+            's': int(latlon[-3:-1])}
