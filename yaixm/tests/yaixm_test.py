@@ -124,26 +124,31 @@ def test_validation_bad():
 
 def test_openair():
     input = dict(TEST_AIRSPACE)
-    oa = yaixm.openair(input['airspace'])
-    assert len(oa) == 6
+    converter = yaixm.Openair()
+    oa = converter.convert(input['airspace'])
+    assert len(oa.split("\n")) == 7
 
 def test_openair_name():
     def name_func(feature, volume):
         return "FOONAME"
 
     input = dict(TEST_AIRSPACE)
-    oa = yaixm.openair(input['airspace'], nfunc=name_func)
+    converter = yaixm.Openair(name_func=name_func)
+    oa = converter.convert(input['airspace'])
+    oa = oa.split("\n")
 
-    assert oa[1] == "AN FOONAME"
+    assert oa[2] == "AN FOONAME"
 
 def test_openair_class():
-    def class_func(feature, volume):
+    def type_func(feature, volume):
         return "A"
 
     input = dict(TEST_AIRSPACE)
-    oa = yaixm.openair(input['airspace'], cfunc=class_func)
+    converter = yaixm.Openair(type_func=type_func)
+    oa = converter.convert(input['airspace'])
+    oa = oa.split("\n")
 
-    assert oa[0] == "AC A"
+    assert oa[1] == "AC A"
 
 def test_representer():
     input = dict(TEST_AIRSPACE)

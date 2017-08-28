@@ -76,7 +76,7 @@ def default_tnp_type(volume, feature):
     return out_type
 
 # Base class for TNP and OpenAir converters
-class Convert():
+class Converter():
     def format_latlon(self, latlon):
         return self.__class__.latlon_fmt.format(*[dms(x)
                                                   for x in latlon.split()])
@@ -130,7 +130,7 @@ class Convert():
         return "\n".join(output)
 
 # Openair converter
-class Openair(Convert):
+class Openair(Converter):
     latlon_fmt =  "{0[d]:02d}:{0[m]:02d}:{0[s]:02d} {0[h]} "\
                   "{1[d]:03d}:{1[m]:02d}:{1[s]:02d} {1[h]}"
 
@@ -201,7 +201,7 @@ class Openair(Convert):
 # IMPORTANT - this implement starts each airspace block with TITLE,
 # followed by CLASS and TYPE. This isn't compatible with all  programs,
 # for example XCSoar
-class Tnp(Convert):
+class Tnp(Converter):
     latlon_fmt = "{0[h]}{0[d]:02d}{0[m]:02d}{0[s]:02d} "\
                  "{1[h]}{1[d]:03d}{1[m]:02d}{1[s]:02d}"
 
