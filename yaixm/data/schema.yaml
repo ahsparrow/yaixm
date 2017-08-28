@@ -50,7 +50,7 @@ definitions:
   # This is more restrictive than the AIXM Character3Type
   name: &name
     type: string
-    pattern: ^[ \(\)\-/0-9A-Z]*$
+    pattern: ^[A-Z][A-Z0-9]+(( |\-|/)[\(\)0-9A-Z]+)*$
 
   # Array of notes
   notes: &notes
@@ -155,12 +155,17 @@ definitions:
       # Overrides class in parent airspace
       class: *class
 
+      # Identifies volume for LoA replacement
       id: *id
 
       lower:
         type: string
         # Ground, or referenced to standard pressure or MSL
         pattern: ^(GND|FL[0-9]{2,3}|[0-9]{1,5}[ ](m|ft))$
+
+      # Overrides name in parent airspace. Allows non-standard airspace
+      # volume names, e.g.P600-X
+      name: *name
 
       notes: *notes
 
@@ -200,9 +205,7 @@ definitions:
       localtype: *localtype
 
       # Airspace name
-      name:
-        <<: *name
-        minLength: 2
+      name: *name
 
       notes: *notes
 

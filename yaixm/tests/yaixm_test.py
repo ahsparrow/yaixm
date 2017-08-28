@@ -50,6 +50,7 @@ TEST_AIRSPACE = {
             }, {
                 "id": "barfoo",
                 "geometry": [{
+                    "name": "SPECIAL-NAME",
                     "lower": "GND",
                     "upper": "1000 ft",
                     "boundary" : [{
