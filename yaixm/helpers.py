@@ -18,6 +18,7 @@
 from copy import deepcopy
 import json as _json
 import logging
+import math
 
 import jsonschema
 import pkg_resources
@@ -139,8 +140,17 @@ def merge_loa(airspace, loas):
 
 # Split latitude or longitude string into hemisphere, degrees, minutes and
 # seconds
-def dms(latlon):
+def to_dms(latlon):
     return {'h': latlon[-1],
             'd': int(latlon[:-5]),
             'm': int(latlon[-5:-3]),
             's': int(latlon[-3:-1])}
+
+# Convert latitude or longitude string to radians
+def to_radians(latlon):
+    dms = to_dms(latlon)
+    degs = dms['d'] + dms['m'] / 60.0 + dms['s'] / 3600.0
+    if d['h'] in "WS":
+        degs = -degs
+
+    return math.radians(degs)

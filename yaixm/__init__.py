@@ -16,5 +16,6 @@
 # along with yaixm.  If not, see <http://www.gnu.org/licenses/>.
 
 from .helpers import load, validate, ordered_map_representer, merge_loa
+from .helpers import to_dms, to_radians
 from .convert import Openair, Tnp
 
