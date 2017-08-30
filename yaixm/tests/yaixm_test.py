@@ -1,4 +1,5 @@
 import json
+import math
 import tempfile
 
 import yaml
@@ -155,3 +156,7 @@ def test_representer():
     input = dict(TEST_AIRSPACE)
     yaml.add_representer(dict, yaixm.ordered_map_representer)
     yaml.dump(input)
+
+def test_to_radians():
+    x = yaixm.to_radians("521234N")
+    assert abs(x - math.radians(52 + 12/60 + 34/3600)) < 1E-6
