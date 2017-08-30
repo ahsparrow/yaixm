@@ -150,7 +150,7 @@ def to_dms(latlon):
 def to_radians(latlon):
     dms = to_dms(latlon)
     degs = dms['d'] + dms['m'] / 60.0 + dms['s'] / 3600.0
-    if d['h'] in "WS":
+    if dms['h'] in "WS":
         degs = -degs
 
     return math.radians(degs)
