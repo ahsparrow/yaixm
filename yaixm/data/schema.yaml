@@ -130,15 +130,23 @@ definitions:
     items: *latlon
     minItems: 1
 
-  # Boundary segment selection
-  boundary_segment: &boundary_segment
+  # Boundary segments selection
+  circle_segment: &circle_segment
+    type: object
+    properties:
+      circle: *circle
+    additionalProperties: False
+
+  line_segment: &line_segment
+    type: object
+    properties:
+      line: *line
+    additionalProperties: False
+
+  arc_segment: &arc_segment
     type: object
     properties:
       arc: *arc
-      circle: *circle
-      line: *line
-    minProperties: 1
-    maxProperties: 1
     additionalProperties: False
 
   #--------------------------------------------------------------------
@@ -147,10 +155,22 @@ definitions:
   volume: &volume
     type: object
     properties:
+      # Boundary is either a circle, or a line with additional arcs and lines
       boundary:
-        type: array
-        items: *boundary_segment
-        minItems: 1
+        oneOf:
+        - type: array
+          items: *circle_segment
+          minItems: 1
+          maxItems: 1
+
+        - type: array
+          items:
+          - *line_segment
+          additionalItems:
+            oneOf:
+            - *line_segment
+            - *arc_segment
+          minItems: 1
 
       # Overrides class in parent airspace
       class: *class
@@ -164,7 +184,7 @@ definitions:
         pattern: ^(GND|FL[0-9]{2,3}|[0-9]{1,5}[ ](m|ft))$
 
       # Overrides name in parent airspace. Allows non-standard airspace
-      # volume names, e.g.P600-X
+      # volume names, e.g. P600-X
       name: *name
 
       notes: *notes
@@ -308,7 +328,7 @@ properties:
     minItems: 1
 
 anyOf:
-    - required: [airspace]
-    - required: [loa]
+- required: [airspace]
+- required: [loa]
 
 additionalProperties: False

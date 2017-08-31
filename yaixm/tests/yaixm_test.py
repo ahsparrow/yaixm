@@ -16,12 +16,8 @@ TEST_AIRSPACE = {
         'name': "BENSON",
         'geometry': [{
             'id': 'benson',
-            'boundary': [{
-                'circle': {
-                    'centre': "513654N 0010545W",
-                    'radius': "2 nm"
-                 }
-            }],
+            'boundary': [{'circle': {'centre': "513654N 0010545W",
+                                     'radius': "2 nm"}}],
             'lower': "GND",
             'upper': "2203 ft"
         }],
@@ -37,12 +33,8 @@ TEST_AIRSPACE = {
                 "geometry": [{
                     "lower": "GND",
                     "upper": "1000 ft",
-                    "boundary" : [{
-                        'circle': {
-                            'centre': "513654N 0010545W",
-                            'radius': "2 nm"
-                        }
-                    }]
+                    "boundary" : [{'line': ["513654N 0010545W",
+                                            "513654N 0010545W"]}]
                 }]
             }],
             "replace": [{
