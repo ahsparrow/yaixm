@@ -28,7 +28,7 @@ setup(
             'yaixm_check = yaixm.cli:check',
             'yaixm_openair = yaixm.cli:openair',
             'yaixm_tnp = yaixm.cli:tnp',
-            'yaixm_json = yaixm.cli:yaml_to_json'
+            'yaixm_json = yaixm.cli:to_json'
         ]
     }
 )

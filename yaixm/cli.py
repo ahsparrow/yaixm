@@ -84,7 +84,7 @@ def tnp():
 
     args.tnp_file.write(output_oa)
 
-def yaml_to_json():
+def to_json():
     parser = argparse.ArgumentParser()
     parser.add_argument("yaml_file", nargs="?",
                         help="YAML input file, stdin if not specified",
