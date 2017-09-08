@@ -23,22 +23,46 @@ def default_filter(volume, feature):
 
 # Default name
 def default_name(volume, feature):
-    return feature['name']
+    rules = feature.get('rules', []) + volume.get('rules', [])
 
-# Default class is volume class if specified, otherwise feature class if
-# specified, otherwise None. Not used for Openair
-def default_class(volume, feature):
-    if volume.get('class'):
-        return volume['class']
-    elif feature.get('class'):
-        return feature['class']
+    if 'name' in volume:
+        return volume['name']
+
     else:
-        return None
+        if 'localtype' in feature:
+            localtype = feature['localtype']
+            if localtype == "GLIDER":
+                subs = ""
+            elif localtype == "NOATZ":
+                subs = "A/F"
+            else:
+                subs = localtype
+
+        elif "RAZ" in rules:
+            subs = "RAZ"
+
+        elif "RMZ" in rules:
+            subs = "RMZ"
+
+        elif "TMZ" in rules:
+            subs = "TMZ"
+
+        elif feature['type'] in ["ATZ", "CTA", "CTR", "TMA"]:
+            subs = feature['type']
+
+        else:
+            subs = ""
+
+        if subs:
+            return "%s %s" % (feature['name'], subs)
+        else:
+            return feature['name']
 
 # Default Openair type
 def default_openair_type(volume, feature):
     as_type = feature['type']
     local_type = feature.get('localtype')
+    rules = feature.get('rules', []) + volume.get('rules', [])
 
     if as_type == "D" or local_type == "DZ":
         out_type = "Q"
@@ -46,17 +70,37 @@ def default_openair_type(volume, feature):
         out_type = "R"
     elif as_type == "P":
         out_type = "P"
-    elif as_type in ["ATZ", "CTA", "CTR", "TMA"] or local_type == "ILS":
+    elif as_type == "ATZ" or local_type == "ILS":
         out_type = "CTR"
+    elif local_type == "MATZ":
+        out_type = "MATZ"
+    elif local_type == "TMZ" or "TMZ" in rules:
+        out_type = "TMZ"
+    elif local_type == "RMZ" or "RMZ" in rules:
+        out_type = "RMZ"
+    elif local_type in ["GLIDER", "NOATZ", "UL"]:
+        out_type = "G"
     else:
-        out_type = volume.get('class') or feature.get('class') or "G"
+        out_type = volume.get('class') or feature.get('class') or "OTHER"
 
     return out_type
+
+# Default TNP class
+def default_tnp_class(volume, feature):
+    local_type = feature.get('localtype')
+
+    if volume.get('class'):
+        return volume['class']
+    elif feature.get('class'):
+        return feature['class']
+    else:
+        return None
 
 # Default TNP type
 def default_tnp_type(volume, feature):
     as_type = feature['type']
     local_type = feature.get('localtype')
+    rules = feature.get('rules', []) + volume.get('rules', [])
 
     if as_type == "D" or local_type == "DZ":
         out_type = "DANGER"
@@ -64,12 +108,16 @@ def default_tnp_type(volume, feature):
         out_type = "PROHIBITED"
     elif as_type == "R":
         out_type = "RESTRICTED"
-    elif as_type == "AWY":
-        out_type = "AIRWAYS"
     elif as_type in ["ATZ", "CTA", "CTR", "TMA"] or local_type == "ILS":
         out_type = "CTA/CTR"
     elif local_type == "MATZ":
         out_type = "MATZ"
+    elif local_type == "TMZ" or "TMZ" in rules:
+        out_type = "TMZ"
+    elif local_type == "RMZ" or "RMZ" in rules:
+        out_type = "RMZ"
+    elif as_type == "AWY":
+        out_type = "AIRWAYS"
     else:
         out_type = "OTHER"
 
@@ -206,7 +254,7 @@ class Tnp(Converter):
                  "{1[h]}{1[d]:03d}{1[m]:02d}{1[s]:02d}"
 
     def __init__(self, filter_func=default_filter, name_func=default_name,
-                 class_func=default_class, type_func=default_tnp_type):
+                 class_func=default_tnp_class, type_func=default_tnp_type):
         self.filter_func = filter_func
         self.name_func = name_func
         self.class_func = class_func
@@ -252,9 +300,16 @@ class Tnp(Converter):
         return ["%s RADIUS=%s CENTRE=%s TO=%s" % (dir, radius, centre, to)]
 
     def do_volume(self, volume, feature):
-        return (["#"] +
-                self.do_name(self.name_func(volume,feature)) +
-                self.do_class(self.class_func(volume, feature)) +
-                self.do_type(self.type_func(volume, feature)) +
-                self.do_levels(volume) +
-                self.do_boundary(volume['boundary']))
+        tnp = ["#"] +\
+              self.do_name(self.name_func(volume,feature)) +\
+              self.do_type(self.type_func(volume, feature)) +\
+              self.do_class(self.class_func(volume, feature)) +\
+              self.do_levels(volume) +\
+              self.do_boundary(volume['boundary'])
+
+        # If class is defined then order is type/class, otherwise class/type.
+        # So XCSoar type is airspace class if defined or airspace type if not.
+        if tnp[3] == "CLASS=":
+            tnp[2], tnp[3] = tnp[3], tnp[2]
+
+        return tnp
