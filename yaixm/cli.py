@@ -19,8 +19,9 @@ import argparse
 import json
 import sys
 
-from .helpers import load, validate
 from .convert import Openair, Tnp
+from .helpers import load, validate
+from .helpers import oasort as oa_sort
 
 def check():
     parser = argparse.ArgumentParser()
@@ -103,3 +104,19 @@ def to_json():
     if args.json_file is sys.stdout:
         print()
 
+def oasort():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("input_file", nargs="?",
+                        help="Input Openair file, stdin if not specified",
+                        type=argparse.FileType("r"), default=sys.stdin)
+    parser.add_argument("output_file", nargs="?",
+                        help="Sorted (and stripped) Openair file, stdout if not specified",
+                        type=argparse.FileType("w", encoding="ascii"),
+                        default=sys.stdout)
+    args = parser.parse_args()
+
+    # Sort input file
+    openair = oa_sort(args.input_file)
+
+    for oa in openair:
+        args.output_file.write(oa)

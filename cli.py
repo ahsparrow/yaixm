@@ -13,6 +13,8 @@ elif script_name == "check":
     yaixm.cli.check()
 elif script_name == "json":
     yaixm.cli.to_json()
+elif script_name == "oasort":
+    yaixm.cli.oasort()
 else:
     print("Unrecognised script: " + script_name, file=sys.stderr)
 

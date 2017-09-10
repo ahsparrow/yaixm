@@ -154,3 +154,34 @@ def to_radians(latlon):
         degs = -degs
 
     return math.radians(degs)
+
+# Sort (and strip) openair
+def oasort(oa_data):
+    openair = []
+    openair_line = ""
+
+    for oa_line in oa_data:
+        # Discard comments
+        if oa_line.startswith("*"):
+            continue
+
+        if oa_line.startswith("AC"):
+            # AC starts a new record
+            if openair_line:
+                openair.append(openair_line)
+            openair_line = oa_line
+
+        else:
+            if oa_line.startswith("DC"):
+                # Normalise floating point format
+                openair_line += "DC %g\n" % float(oa_line[3:])
+            else:
+                openair_line += oa_line
+
+    # Append final line
+    openair.append(openair_line)
+
+    # Sort lines by name
+    openair.sort(key=lambda x: x.split('\n')[1])
+
+    return openair

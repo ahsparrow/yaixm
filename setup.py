@@ -25,10 +25,11 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'yaixm_check = yaixm.cli:check',
-            'yaixm_openair = yaixm.cli:openair',
-            'yaixm_tnp = yaixm.cli:tnp',
-            'yaixm_json = yaixm.cli:to_json'
+            "yaixm_check = yaixm.cli:check",
+            "yaixm_openair = yaixm.cli:openair",
+            "yaixm_tnp = yaixm.cli:tnp",
+            "yaixm_json = yaixm.cli:to_json",
+            "yaixm_oasort  = yaixm.cli:oasort"
         ]
     }
 )
