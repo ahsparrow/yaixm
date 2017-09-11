@@ -80,25 +80,6 @@ def ordered_map_representer(dumper, data):
             'tag:yaml.org,2002:map',
             sorted(data.items(), key=lambda t: PPRINT_PROP_LIST.index(t[0])))
 
-def find_feature(airspace, id):
-    def f_match(id, feature):
-        if feature['name'] == id['name']:
-            if 'localtype' in id:
-                return feature.get('localtype') == id['localtype']
-            else:
-                return feature['type'] == id.get('type')
-        else:
-            return False
-
-    match = [f for f in airspace if f_match(id, f)]
-    if len(match) > 1:
-        logging.warning("Multiple match for %s" % str(id))
-
-    if match:
-        return match[0]
-    else:
-        return None
-
 # Get volume and associated feature for given volume ID
 def find_volume(airspace, vid):
     for feature in airspace:
@@ -154,34 +135,3 @@ def to_radians(latlon):
         degs = -degs
 
     return math.radians(degs)
-
-# Sort (and strip) openair
-def oasort(oa_data):
-    openair = []
-    openair_line = ""
-
-    for oa_line in oa_data:
-        # Discard comments
-        if oa_line.startswith("*"):
-            continue
-
-        if oa_line.startswith("AC"):
-            # AC starts a new record
-            if openair_line:
-                openair.append(openair_line)
-            openair_line = oa_line
-
-        else:
-            if oa_line.startswith("DC"):
-                # Normalise floating point format
-                openair_line += "DC %g\n" % float(oa_line[3:])
-            else:
-                openair_line += oa_line
-
-    # Append final line
-    openair.append(openair_line)
-
-    # Sort lines by name
-    openair.sort(key=lambda x: x.split('\n')[1])
-
-    return openair

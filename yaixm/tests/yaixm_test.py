@@ -152,8 +152,3 @@ def test_representer():
 def test_to_radians():
     x = yaixm.to_radians("521234N")
     assert abs(x - math.radians(52 + 12/60 + 34/3600)) < 1E-6
-
-def test_oasort():
-    oa = ["AC A\n", "AN FOO\n", "AC A\n", "AN BAR\n"]
-    out = yaixm.oasort(oa)
-    assert out == [oa[2] + oa[3], oa[0] + oa[1]]
