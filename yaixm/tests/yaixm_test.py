@@ -149,6 +149,9 @@ def test_representer():
     yaml.add_representer(dict, yaixm.ordered_map_representer)
     yaml.dump(input)
 
-def test_to_radians():
-    x = yaixm.to_radians("521234N")
+def test_radians():
+    x = yaixm.radians("521234N")
     assert abs(x - math.radians(52 + 12/60 + 34/3600)) < 1E-6
+
+    x = yaixm.radians("0025432W")
+    assert abs(x + math.radians(2 + 54/60 + 32/3600)) < 1E-6

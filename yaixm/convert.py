@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with yaixm.  If not, see <http://www.gnu.org/licenses/>.
 
-from .helpers import to_dms
+from .helpers import dms
 
 # Default filter includes everything
 def default_filter(volume, feature):
@@ -126,7 +126,7 @@ def default_tnp_type(volume, feature):
 # Base class for TNP and OpenAir converters
 class Converter():
     def format_latlon(self, latlon):
-        return self.__class__.latlon_fmt.format(*[to_dms(x)
+        return self.__class__.latlon_fmt.format(*[dms(x)
                                                   for x in latlon.split()])
 
     def do_line(self, line):
