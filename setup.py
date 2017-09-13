@@ -18,7 +18,7 @@ setup(
         "Programming Language :: Python :: 3.6"
     ],
     keywords=['airspace', 'aixm', 'openair'],
-    install_requires=["jsonschema", "PyYAML"],
+    install_requires=["jsonschema", "PyYAML", "strict-rfc3339"],
     packages=find_packages(),
     package_data={
         'yaixm': ["data/schema.yaml"]
