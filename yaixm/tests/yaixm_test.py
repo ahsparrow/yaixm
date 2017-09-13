@@ -155,3 +155,9 @@ def test_radians():
 
     x = yaixm.radians("0025432W")
     assert abs(x + math.radians(2 + 54/60 + 32/3600)) < 1E-6
+
+def test_timestamp():
+    input = "2017-09-13T09:00:00Z"
+    output  = yaixm.load("2017-09-13T09:00:00Z")
+    assert input == output
+

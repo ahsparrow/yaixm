@@ -28,6 +28,12 @@ try:
 except ImportError:
     from yaml import Loader
 
+# Load timestamps as strings
+def timestamp_constructor(loader, node):
+    return loader.construct_scalar(node)
+
+Loader.add_constructor("tag:yaml.org,2002:timestamp", timestamp_constructor)
+
 # Property order for pretty printing (follows order in AIP)
 PPRINT_PROP_LIST = [
     "name", "type", "localtype",
