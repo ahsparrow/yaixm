@@ -154,12 +154,12 @@ def minmax_lat(volume):
     lat_arr = []
     for bdry in volume['boundary']:
         if 'circle' in bdry:
-            radius = int(bdry['circle']['radius'].split()[0])
+            radius = float(bdry['circle']['radius'].split()[0])
             clat = bdry['circle']['centre'].split()[0]
             lat_arr.append(radians(clat) + radius * NM_TO_RADIANS)
             lat_arr.append(radians(clat) - radius * NM_TO_RADIANS)
         elif 'arc' in bdry:
-            radius = int(bdry['arc']['radius'].split()[0])
+            radius = float(bdry['arc']['radius'].split()[0])
             clat = bdry['arc']['centre'].split()[0]
             lat_arr.append(radians(clat) + radius * NM_TO_RADIANS)
             lat_arr.append(radians(clat) - radius * NM_TO_RADIANS)
