@@ -1,3 +1,4 @@
+from copy import deepcopy
 import json
 import math
 import tempfile
@@ -8,7 +9,7 @@ import yaixm
 
 TEST_AIRSPACE = {
     'release': {
-        'airac_date': "2017-05-12",
+        'airac_date': "2017-05-12T00:00:00Z",
         'timestamp': "2017-05-11T07:55:53+00:00",
         'schema_version': 1
     },
@@ -111,7 +112,7 @@ def test_validation_good():
     assert e is None
 
 def test_validation_bad():
-    input = dict(TEST_AIRSPACE)
+    input = dict(deepcopy(TEST_AIRSPACE))
     input['airspace'][0]['type'] = "NOT REALLY A TYPE"
     e = yaixm.validate(input)
     assert e
@@ -161,3 +162,23 @@ def test_timestamp():
     output  = yaixm.load("2017-09-13T09:00:00Z")
     assert input == output
 
+def test_make_filter():
+    input = dict(TEST_AIRSPACE)
+
+    # Default filter
+    f = yaixm.make_filter()
+    converter = yaixm.Openair(filter_func=f)
+    oa = converter.convert(input['airspace'])
+    assert len(oa.split("\n")) == 7
+
+    # Filter by name
+    f = yaixm.make_filter(exclude=[{'name': "BENSON", 'type': "ATZ"}])
+    converter = yaixm.Openair(filter_func=f)
+    oa = converter.convert(input['airspace'])
+    assert oa == ""
+
+    # Filter by latitude
+    f = yaixm.make_filter(north=50)
+    converter = yaixm.Openair(filter_func=f)
+    oa = converter.convert(input['airspace'])
+    assert oa == ""

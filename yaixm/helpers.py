@@ -56,6 +56,9 @@ PPRINT_PROP_LIST = [
     "notes",
 ]
 
+# Conversion factor
+NM_TO_RADIANS = 1852.0 / 6371000
+
 # Load data from either YAML or JSON
 def load(stream, json=False):
     if json:
@@ -128,7 +131,11 @@ def merge_loa(airspace, loas):
 # Split latitude or longitude string into hemisphere, degrees, minutes and
 # seconds
 def dms(latlon):
-    return {'h': latlon[-1],
+    hemi = latlon[-1]
+    assert ((hemi in "NS" and len(latlon) == 7) or
+            (hemi in "EW" and len(latlon) == 8))
+
+    return {'h': hemi,
             'd': int(latlon[:-5]),
             'm': int(latlon[-5:-3]),
             's': int(latlon[-3:-1])}
@@ -141,3 +148,22 @@ def radians(latlon):
         degs = -degs
 
     return math.radians(degs)
+
+# Get (approximate) minimum and maximum latitude for volume, in radians
+def minmax_lat(volume):
+    lat_arr = []
+    for bdry in volume['boundary']:
+        if 'circle' in bdry:
+            radius = int(bdry['circle']['radius'].split()[0])
+            clat = bdry['circle']['centre'].split()[0]
+            lat_arr.append(radians(clat) + radius * NM_TO_RADIANS)
+            lat_arr.append(radians(clat) - radius * NM_TO_RADIANS)
+        elif 'arc' in bdry:
+            radius = int(bdry['arc']['radius'].split()[0])
+            clat = bdry['arc']['centre'].split()[0]
+            lat_arr.append(radians(clat) + radius * NM_TO_RADIANS)
+            lat_arr.append(radians(clat) - radius * NM_TO_RADIANS)
+        elif 'line' in bdry:
+            lat_arr.extend([radians(b.split()[0]) for b in bdry['line']])
+
+    return min(lat_arr), max(lat_arr)

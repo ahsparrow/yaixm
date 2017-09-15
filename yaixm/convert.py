@@ -15,11 +15,50 @@
 # You should have received a copy of the GNU General Public License
 # along with yaixm.  If not, see <http://www.gnu.org/licenses/>.
 
-from .helpers import dms
+import math
+
+from .helpers import dms, minmax_lat
+
+# Filter factory
+def make_filter(noatz=True, microlight=True, hgl=True,
+                gliding_site=True, north=59, south=49, exclude=None):
+    def airfilter(volume, feature):
+        as_type = feature['type']
+        as_name = feature['name']
+
+        # Exclude by name/type
+        if exclude:
+            for e in exclude:
+                if as_name == e['name'] and as_type == e['type']:
+                    return False
+
+        # Non-ATZ airfields
+        if not noatz and feature.get('localtype') == "NOATZ":
+            return False
+
+        # Microlight strips
+        if not microlight and feature.get('localtype') == "UL":
+            return False
+
+        # HIRTA, GVS and LASER
+        if not hgl and feature.get('localtype') in ["HIRTA", "GVS", "LASER"]:
+            return false
+
+        # Gliding sites
+        if (not gliding_site and feature['type'] == "OTHER" and
+            feature.get('localtype') == "GLIDER"):
+            return False
+
+        min_lat, max_lat = minmax_lat(volume)
+        if (min_lat > math.radians(north)) or (max_lat < math.radians(south)):
+            return False
+
+        return True
+
+    return airfilter
 
 # Default filter includes everything
-def default_filter(volume, feature):
-    return True
+default_filter = make_filter()
 
 # Default name
 def default_name(volume, feature):
