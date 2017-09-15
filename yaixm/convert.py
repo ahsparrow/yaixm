@@ -42,7 +42,7 @@ def make_filter(noatz=True, microlight=True, hgl=True,
 
         # HIRTA, GVS and LASER
         if not hgl and feature.get('localtype') in ["HIRTA", "GVS", "LASER"]:
-            return false
+            return False
 
         # Gliding sites
         if (not gliding_site and feature['type'] == "OTHER" and
