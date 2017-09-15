@@ -21,11 +21,12 @@ from .helpers import dms, level, minmax_lat
 
 # Filter factory
 def make_filter(noatz=True, microlight=True, hgl=True,
-                gliding_site=True, north=59, south=49, max_level=66000,
+                gliding_site=True, north=59, south=49, max_level=None,
                 exclude=None):
     def airfilter(volume, feature):
-        as_type = feature['type']
         as_name = feature['name']
+        as_type = feature['type']
+        as_localtype = feature.get('localtype')
 
         # Exclude by name/type
         if exclude:
@@ -34,24 +35,23 @@ def make_filter(noatz=True, microlight=True, hgl=True,
                     return False
 
         # Non-ATZ airfields
-        if not noatz and feature.get('localtype') == "NOATZ":
+        if not noatz and as_localtype == "NOATZ":
             return False
 
         # Microlight strips
-        if not microlight and feature.get('localtype') == "UL":
+        if not microlight and as_localtype == "UL":
             return False
 
         # HIRTA, GVS and LASER
-        if not hgl and feature.get('localtype') in ["HIRTA", "GVS", "LASER"]:
+        if not hgl and as_localtype in ["HIRTA", "GVS", "LASER"]:
             return False
 
         # Gliding sites
-        if (not gliding_site and feature['type'] == "OTHER" and
-            feature.get('localtype') == "GLIDER"):
+        if not gliding_site and as_type == "OTHER" and as_localtype == "GLIDER":
             return False
 
         # Max level
-        if level(volume['lower']) >= max_level:
+        if max_level and level(volume['lower']) >= max_level:
             return False
 
         # Min/max latitude
