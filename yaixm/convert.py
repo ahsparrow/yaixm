@@ -17,11 +17,12 @@
 
 import math
 
-from .helpers import dms, minmax_lat
+from .helpers import dms, level, minmax_lat
 
 # Filter factory
 def make_filter(noatz=True, microlight=True, hgl=True,
-                gliding_site=True, north=59, south=49, exclude=None):
+                gliding_site=True, north=59, south=49, max_level=66000,
+                exclude=None):
     def airfilter(volume, feature):
         as_type = feature['type']
         as_name = feature['name']
@@ -49,6 +50,11 @@ def make_filter(noatz=True, microlight=True, hgl=True,
             feature.get('localtype') == "GLIDER"):
             return False
 
+        # Max level
+        if level(volume['lower']) >= max_level:
+            return False
+
+        # Min/max latitude
         min_lat, max_lat = minmax_lat(volume)
         if (min_lat > math.radians(north)) or (max_lat < math.radians(south)):
             return False

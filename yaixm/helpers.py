@@ -167,3 +167,12 @@ def minmax_lat(volume):
             lat_arr.extend([radians(b.split()[0]) for b in bdry['line']])
 
     return min(lat_arr), max(lat_arr)
+
+# Return "normalised" level from SFC, altitude or flight level
+def level(value):
+    if value.startswith("FL"):
+        return int(value[2:])
+    elif value.endswith("ft"):
+        return int(value.split()[0])
+    else:
+        return 0
