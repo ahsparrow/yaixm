@@ -17,5 +17,6 @@
 
 from .helpers import load, validate, ordered_map_representer, merge_loa
 from .helpers import dms, radians
-from .convert import Openair, Tnp, make_filter
+from .convert import Openair, Tnp, make_filter, make_openair_type, \
+                     make_tnp_class, make_tnp_type
 
