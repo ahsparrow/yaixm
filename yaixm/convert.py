@@ -266,7 +266,7 @@ class Openair(Converter):
     # Upper and lower levels
     def do_levels(self, volume):
         def level_str(level):
-          if level == "GND":
+          if level == "SFC":
               return "SFC"
           elif level.endswith('ft'):
               return level[:-3] + "ALT"
@@ -343,7 +343,7 @@ class Tnp(Converter):
 
     def do_levels(self, volume):
         def level_str(level):
-          if level == "GND":
+          if level == "SFC":
               return "SFC"
           elif level.endswith('ft'):
               return level[:-3] + "ALT"

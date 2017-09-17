@@ -180,8 +180,8 @@ definitions:
 
       lower:
         type: string
-        # Ground, or referenced to standard pressure or MSL
-        pattern: ^(GND|FL[0-9]{2,3}|[0-9]{1,5}[ ](m|ft))$
+        # Surface, or referenced to standard pressure or MSL
+        pattern: ^(SFC|FL[0-9]{2,3}|[0-9]{1,5}[ ](m|ft))$
 
       # Overrides name in parent airspace. Allows non-standard airspace
       # volume names, e.g. P600-X

@@ -19,7 +19,7 @@ TEST_AIRSPACE = {
             'id': 'benson',
             'boundary': [{'circle': {'centre': "513654N 0010545W",
                                      'radius': "2 nm"}}],
-            'lower': "GND",
+            'lower': "SFC",
             'upper': "2203 ft"
         }],
         "type": "ATZ"
@@ -32,7 +32,7 @@ TEST_AIRSPACE = {
                 "name": "TEST BOX",
                 "type": "CTR",
                 "geometry": [{
-                    "lower": "GND",
+                    "lower": "SFC",
                     "upper": "1000 ft",
                     "boundary" : [{'line': ["513654N 0010545W",
                                             "513654N 0010545W"]}]
@@ -45,7 +45,7 @@ TEST_AIRSPACE = {
                 "id": "barfoo",
                 "geometry": [{
                     "name": "SPECIAL-NAME",
-                    "lower": "GND",
+                    "lower": "SFC",
                     "upper": "1000 ft",
                     "boundary" : [{
                         'circle': {
