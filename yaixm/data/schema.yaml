@@ -326,24 +326,24 @@ definitions:
       type:
         type: string
         enum:
-          - BLDG    # Building
-          - BRDG    # Bridge
-          - CHIM    # Chimney
-          - COOL    # Cooling tower
-          - CRN     # Crane
-          - FLR     # Gas flare
-          - MET     # Meteorological mast
-          - MINE    # Mining structure
-          - MISC    # Miscellaneous
-          - MONT    # Monument
-          - OBST    # Other
-          - OIL     # Oil refinery
-          - PLT     # Miscellaneous industrial building
-          - POW     # Place of worship
-          - PYL     # Pylon
-          - RTM     # Radio/TV mast
-          - TURB    # Wind turbine
-          - WASTE   # Waste pipe
+          - BLDG        # Building
+          - BRDG        # Bridge
+          - CHIM        # Chimney
+          - COOL        # Cooling tower
+          - CRN         # Crane
+          - FLR         # Gas flare
+          - MET         # Meteorological mast
+          - MINE        # Mining structure
+          - MISC        # Miscellaneous
+          - MONT        # Monument
+          - OBST        # Other
+          - OIL         # Oil refinery
+          - PLT         # Miscellaneous industrial building
+          - POW         # Place of worship
+          - PYL         # Pylon
+          - RTM         # Radio/TV mast
+          - TURB-ON     # Onshore wind turbine
+          - WASTE       # Waste pipe
 
   #--------------------------------------------------------------------
   # Release header
