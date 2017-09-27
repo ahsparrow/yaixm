@@ -309,6 +309,43 @@ definitions:
     additionalProperties: False
 
   #--------------------------------------------------------------------
+  # Obstacle
+
+  obstacle: &obstacle
+    type: object
+    properties:
+      elevation:
+        type: string
+        pattern: ^[0-9]{1,4}[ ](m|ft)$
+      # ID from ENR spreadsheet
+      id:
+        type: string
+        pattern: ^UK[0-9]{4}[A-Z][0-9]{3}[A-Z]$
+      position: *latlon
+      # Type emumeration from ENR spreadsheet
+      type:
+        type: string
+        enum:
+          - BLDG    # Building
+          - BRDG    # Bridge
+          - CHIM    # Chimney
+          - COOL    # Cooling tower
+          - CRN     # Crane
+          - FLR     # Gas flare
+          - MET     # Meteorological mast
+          - MINE    # Mining structure
+          - MISC    # Miscellaneous
+          - MONT    # Monument
+          - OBST    # Other
+          - OIL     # Oil refinery
+          - PLT     # Miscellaneous industrial building
+          - POW     # Place of worship
+          - PYL     # Pylon
+          - RTM     # Radio/TV mast
+          - TURB    # Wind turbine
+          - WASTE   # Waste pipe
+
+  #--------------------------------------------------------------------
   # Release header
 
   release: &release
@@ -344,9 +381,14 @@ properties:
     type: array
     items: *loa
     minItems: 1
+  obstacle:
+    type: array
+    items: *obstacle
+    minItems: 1
 
 anyOf:
 - required: [airspace]
 - required: [loa]
+- required: [obstacle]
 
 additionalProperties: False

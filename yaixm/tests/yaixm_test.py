@@ -56,6 +56,12 @@ TEST_AIRSPACE = {
                 }]
             }],
         }]
+    }],
+    'obstacle': [{
+        'id': "UK1234A567B",
+        'elevation': "500 ft",
+        'position': "512345N 0012345W",
+        'type': "OBST"
     }]
 }
 
