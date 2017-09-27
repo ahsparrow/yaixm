@@ -320,7 +320,7 @@ definitions:
       # ID from ENR spreadsheet
       id:
         type: string
-        pattern: ^UK[0-9]{4}[A-Z][0-9]{3}[A-Z]$
+        pattern: ^UK[0-9A-Z]+$
       position: *latlon
       # Type emumeration from ENR spreadsheet
       type:
