@@ -315,9 +315,8 @@ class Openair(Converter):
                 self.do_boundary(volume['boundary']))
 
 # TNP converter
-# IMPORTANT - this implement starts each airspace block with TITLE,
-# followed by CLASS and TYPE. This isn't compatible with all  programs,
-# for example XCSoar
+# IMPORTANT - this implemention starts each airspace block with TITLE,
+# followed by CLASS/TYPE. This may not compatible with some programs.
 class Tnp(Converter):
     latlon_fmt = "{0[h]}{0[d]:02d}{0[m]:02d}{0[s]:02d} "\
                  "{1[h]}{1[d]:03d}{1[m]:02d}{1[s]:02d}"
