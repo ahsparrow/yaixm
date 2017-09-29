@@ -244,14 +244,19 @@ class Converter():
 
         if obstacles:
             for obstacle in obstacles:
+                # Create dummy feature/volume
+                feature = {'name': "OBSTACLE",
+                           'type': "OTHER"}
                 volume = {'upper': obstacle['elevation'],
                           'lower': "SFC",
                           'boundary': [
                                 {'circle': {'centre': obstacle['position'],
                                             'radius': "0.5 nm"}}
                           ]}
-                x = self.do_obstacle(volume)
-                output.extend(x)
+
+                if self.filter_func(volume, feature):
+                    x = self.do_volume(volume, feature)
+                    output.extend(x)
 
         output.extend(self.end())
 
@@ -325,11 +330,6 @@ class Openair(Converter):
                 self.do_levels(volume) +
                 self.do_boundary(volume['boundary']))
 
-    def do_obstacle(self, volume):
-        return (["*", "AC G", "AN OBSTACLE"] +
-                self.do_levels(volume) +
-                self.do_boundary(volume['boundary']))
-
 # TNP converter
 # IMPORTANT - this implemention starts each airspace block with TITLE,
 # followed by CLASS/TYPE. This may not compatible with some programs.
@@ -397,8 +397,3 @@ class Tnp(Converter):
             tnp[2], tnp[3] = tnp[3], tnp[2]
 
         return tnp
-
-    def do_obstacle(self, volume):
-        return (["#", "TITLE=OBSTACLE", "CLASS=", "TYPE=OTHER"] +
-                self.do_levels(volume) +
-                self.do_boundary(volume['boundary']))
