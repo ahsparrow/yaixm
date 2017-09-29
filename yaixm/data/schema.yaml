@@ -61,7 +61,6 @@ definitions:
       - NOATZ       # Non-ATZ airfield
       - RAT         # Temporary restricted area
       - RMZ         # Radio mandatory zone
-      - RTM         # Radio mast (and other obstacles)
       - UL          # Ultra-light strip
       - TMZ         # Transponder mandatory zone
 
