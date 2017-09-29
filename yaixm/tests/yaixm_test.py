@@ -188,3 +188,13 @@ def test_make_filter():
     converter = yaixm.Openair(filter_func=f)
     oa = converter.convert(input['airspace'])
     assert oa == ""
+
+def test_openair_obstacle():
+    converter = yaixm.Openair()
+    oa = converter.convert([], TEST_AIRSPACE['obstacle'])
+    assert len(oa.split("\n")) == 7
+
+def test_tnp():
+    converter = yaixm.Tnp()
+    oa = converter.convert([], TEST_AIRSPACE['obstacle'])
+    assert len(oa.split("\n")) == 9
