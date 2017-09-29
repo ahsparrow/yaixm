@@ -19,6 +19,27 @@ import math
 
 from .helpers import dms, level, minmax_lat
 
+OBSTACLE_TYPES = {
+   'BLDG': "BUILDING",
+   'BRDG': "BRIDGE",
+   'CHIM': "CHIMNEY",
+   'COOL': "COOLING TOWER",
+   'CRN': "CRANE",
+   'FLR': "GAS FLARE",
+   'MET': "MET MAST",
+   'MINE': "MINE",
+   'MISC': "OBSTACLE",
+   'MONT': "MONUMENT",
+   'OBST': "OBSTACLE",
+   'OIL': "OIL REFINERY",
+   'PLT': "BUILDING",
+   'POW': "CHURCH",
+   'PYL': "PYLON",
+   'RTM': "RADIO MAST",
+   'TURB-ON': "WIND TURBINE",
+   'WASTE': "WASTE PIPE"
+}
+
 # Filter factory
 def make_filter(noatz=True, microlight=True, hgl=True,
                 gliding_site=True, north=59, south=49, max_level=None,
@@ -245,14 +266,16 @@ class Converter():
         if obstacles:
             for obstacle in obstacles:
                 # Create dummy feature/volume
-                feature = {'name': "OBSTACLE",
-                           'type': "OTHER"}
-                volume = {'upper': obstacle['elevation'],
-                          'lower': "SFC",
-                          'boundary': [
-                                {'circle': {'centre': obstacle['position'],
-                                            'radius': "0.5 nm"}}
-                          ]}
+                feature = {
+                    'name': OBSTACLE_TYPES.get(obstacle['type'], "OBSTACLE"),
+                    'type': "OTHER"
+                }
+                volume = {
+                    'upper': obstacle['elevation'],
+                    'lower': "SFC",
+                    'boundary': [{'circle': {'centre': obstacle['position'],
+                                             'radius': "0.5 nm"}}]
+                }
 
                 if self.filter_func(volume, feature):
                     x = self.do_volume(volume, feature)
