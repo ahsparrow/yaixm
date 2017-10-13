@@ -198,3 +198,10 @@ def test_tnp():
     converter = yaixm.Tnp()
     oa = converter.convert([], TEST_AIRSPACE['obstacle'])
     assert len(oa.split("\n")) == 9
+
+def test_merge_loa():
+    input = dict(TEST_AIRSPACE)
+    airspace = yaixm.merge_loa(TEST_AIRSPACE['airspace'], TEST_AIRSPACE['loa'])
+
+    names = [feature['name'] for feature in airspace]
+    assert "TEST BOX" in names
