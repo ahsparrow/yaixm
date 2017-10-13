@@ -107,6 +107,9 @@ def merge_loa(airspace, loas):
     replace_vol_ids = []
     for loa in loas:
         for area in loa['areas']:
+            # Add LOA rule to feature
+            area['rules'] = area.get('rules', []).extend('LOA')
+
             # Add new LoA airspace features
             merge_airspace.extend(area['add'])
 

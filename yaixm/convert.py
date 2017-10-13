@@ -94,6 +94,9 @@ def default_name(volume, feature):
     if 'name' in volume:
         return volume['name']
 
+    elif 'LOA' in rules:
+        return feature['name']
+
     else:
         if 'localtype' in feature:
             localtype = feature['localtype']
