@@ -104,7 +104,9 @@ def find_volume(airspace, vid):
 def merge_loa(airspace, loas):
     merge_airspace = deepcopy(airspace)
 
-    replace_vol_ids = []
+    replace_vols = []
+
+    # Add new features
     for loa in loas:
         for area in loa['areas']:
             # Add LOA rule to new features
@@ -116,23 +118,25 @@ def merge_loa(airspace, loas):
             # Add new LoA airspace features
             merge_airspace.extend(area['add'])
 
-            # Replace volumes in existing features
-            for replace_vol in area.get('replace', []):
-                # Find volume to be replaced
-                volume, feature = find_volume(merge_airspace,
-                                              replace_vol['id'])
-                if feature is None:
-                    continue
+            # Store replacement volumes
+            replace_vols.extend(area.get('replace', []))
 
-                # Delete old volume
-                feature['geometry'].remove(volume)
+    # Replacement volumes
+    for replace in replace_vols:
+        # Find volume to be replaced
+        volume, feature = find_volume(merge_airspace, replace['id'])
+        if feature is None:
+            continue
 
-                # Append new volumes (maybe null array)
-                feature['geometry'].extend(replace_vol['geometry'])
+        # Delete old volume
+        feature['geometry'].remove(volume)
 
-                # Remove feature if no geometry remaining
-                if not feature['geometry']:
-                    merge_airspace.remove(feature)
+        # Append new volumes (maybe null array)
+        feature['geometry'].extend(replace['geometry'])
+
+        # Remove feature if no geometry remaining
+        if not feature['geometry']:
+            merge_airspace.remove(feature)
 
     return merge_airspace
 
