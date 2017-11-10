@@ -29,7 +29,7 @@ setup(
             "yaixm_openair = yaixm.cli:openair",
             "yaixm_tnp = yaixm.cli:tnp",
             "yaixm_json = yaixm.cli:to_json",
-            "yaixm_merge = yaixm.cli.merge"
+            "yaixm_merge = yaixm.cli:merge"
         ]
     }
 )
