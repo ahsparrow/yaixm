@@ -20,7 +20,7 @@ import json
 import sys
 
 from .convert import Openair, Tnp
-from .helpers import load, validate
+from .helpers import load, validate, merge_loa
 
 def check():
     parser = argparse.ArgumentParser()
@@ -102,3 +102,28 @@ def to_json():
 
     if args.json_file is sys.stdout:
         print()
+
+def merge():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("input_file", nargs="?",
+                        help="YAML input file, stdin if not specified",
+                        type=argparse.FileType("r"), default=sys.stdin)
+    parser.add_argument("output_file", nargs="?",
+                        help="Merged JSON output file, stdout if not specified",
+                        type=argparse.FileType("w"), default=sys.stdout)
+    parser.add_argument("-l", "--loa", help="List of LOAs (comma separated)",
+                        default="")
+    args = parser.parse_args()
+
+    yaixm = load(args.input_file)
+    airspace = yaixm['airspace']
+    loa = yaixm['loa']
+
+    loa_names = [x.strip() for x in args.loa.split(",")]
+
+    if loa_names[0]:
+        loa = [x for x in loa if x['name'] in loa_names]
+
+    merged = {'airspace': merge_loa(airspace, loa)}
+
+    json.dump(merged, args.output_file, sort_keys=True, indent=4)

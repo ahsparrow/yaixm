@@ -15,6 +15,8 @@ elif script_name == "json":
     yaixm.cli.to_json()
 elif script_name == "oasort":
     yaixm.cli.oasort()
+elif script_name == "merge":
+    yaixm.cli.merge()
 else:
     print("Unrecognised script: " + script_name, file=sys.stderr)
 
