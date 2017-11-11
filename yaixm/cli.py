@@ -119,7 +119,7 @@ def merge():
     airspace = yaixm['airspace']
     loa = yaixm['loa']
 
-    loa_names = [x.strip() for x in args.loa.split(",")]
+    loa_names = [x.strip() for x in args.merge.split(",")]
 
     if loa_names[0]:
         loa = [x for x in loa if x['name'] in loa_names]
