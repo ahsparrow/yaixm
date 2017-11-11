@@ -10,8 +10,8 @@ possibly, will be) built on AIXM data, though unfortunately this data
 isn't publicly available.
 
 YAML is a data serialisation format specifically designed to be human
-readable and writable. This is important for YAIXM because the data is
-entered manually from the AIP.
+readable and writable. This is important - YAIXM data is entered manually
+from the AIP.
 
 YAIXM data can be parsed directly (YAML libraries are available for all
 common computer languages) or converted to JSON before parsing.
