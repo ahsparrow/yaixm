@@ -111,8 +111,8 @@ def merge():
     parser.add_argument("output_file", nargs="?",
                         help="Merged JSON output file, stdout if not specified",
                         type=argparse.FileType("w"), default=sys.stdout)
-    parser.add_argument("-l", "--loa", help="List of LOAs (comma separated)",
-                        default="")
+    parser.add_argument("-m", "--merge", default="",
+                        help="Comma separated list of LOAs to merge")
     args = parser.parse_args()
 
     yaixm = load(args.input_file)
