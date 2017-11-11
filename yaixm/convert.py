@@ -94,30 +94,19 @@ def default_name(volume, feature):
     if 'name' in volume:
         return volume['name']
 
-    elif 'LOA' in rules:
-        return feature['name']
-
     else:
         if 'localtype' in feature:
             localtype = feature['localtype']
-            if localtype == "GLIDER":
-                subs = ""
-            elif localtype == "NOATZ":
+            if localtype in ["NOATZ", "UL"]:
                 subs = "A/F"
-            else:
+            elif localtype in ["DZ", "GVS", "HIRTA", "ILS", "LASER"]:
                 subs = localtype
+
+        elif feature['type'] in ["ATZ"]:
+            subs = feature['type']
 
         elif "RAZ" in rules:
             subs = "RAZ"
-
-        elif "RMZ" in rules:
-            subs = "RMZ"
-
-        elif "TMZ" in rules:
-            subs = "TMZ"
-
-        elif feature['type'] in ["ATZ", "CTA", "CTR", "TMA"]:
-            subs = feature['type']
 
         else:
             subs = ""
