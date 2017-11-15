@@ -57,6 +57,17 @@ TEST_AIRSPACE = {
             }],
         }]
     }],
+    'rat': [{
+        'name': "RAT TEST",
+        'geometry': [{
+            'boundary': [{'circle': {'centre': "513654N 0010545W",
+                                     'radius': "2 nm"}}],
+            'lower': "SFC",
+            'upper': "2203 ft"
+        }],
+        "type": "OTHER",
+        "localtype": "RAT"
+    }],
     'obstacle': [{
         'id': "UK1234A567B",
         'elevation': "500 ft",

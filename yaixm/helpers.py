@@ -38,7 +38,7 @@ Loader.add_constructor("tag:yaml.org,2002:timestamp", timestamp_constructor)
 PPRINT_PROP_LIST = [
     "name", "type", "localtype",
 
-    "release", "airspace", "loa", "obstacle",
+    "release", "airspace", "loa", "obstacle", "rat",
 
     "areas",
 
