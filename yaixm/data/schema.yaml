@@ -369,6 +369,7 @@ definitions:
     required: [airac_date, timestamp, schema_version]
     additionalProperties: False
 
+# Top level schema
 type: object
 properties:
   release: *release
@@ -380,14 +381,26 @@ properties:
     type: array
     items: *loa
     minItems: 1
+  rat:
+    type: array
+    items: *feature
+    minItems: 0
   obstacle:
     type: array
     items: *obstacle
     minItems: 1
 
-anyOf:
-- required: [airspace]
-- required: [loa]
-- required: [obstacle]
+oneOf:
+  # Allow individual YAIXM files to pass check
+  - allOf:
+    - maxProperties: 1
+    - oneOf:
+        - required: [airspace]
+        - required: [loa]
+        - required: [rat]
+        - required: [obstacle]
+
+  # Otherwise must have at least the release header and airspace
+  - required: [release, airspace]
 
 additionalProperties: False

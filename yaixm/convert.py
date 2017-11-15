@@ -143,6 +143,8 @@ def make_openair_type(atz="CTR", ils="G"):
             out_type = "RMZ"
         elif local_type in ["GLIDER", "NOATZ", "UL"]:
             out_type = "G"
+        elif local_type == "RAT":
+            out_type = "A"
         else:
             out_type = volume.get('class') or feature.get('class') or "OTHER"
 
@@ -166,6 +168,8 @@ def make_tnp_class(atz=None, ils=None):
             return atz
         elif local_type == "ILS":
             return ils
+        elif local_type == "RAT":
+            return "A"
         else:
             return None
 
@@ -186,7 +190,7 @@ def make_tnp_type(ils="OTHER"):
             out_type = "PROHIBITED"
         elif as_type == "R":
             out_type = "RESTRICTED"
-        elif as_type in ["ATZ", "CTA", "CTR", "TMA"]:
+        elif as_type in ["ATZ", "CTA", "CTR", "TMA", "RAT"]:
             out_type = "CTA/CTR"
         elif local_type == "MATZ":
             out_type = "MATZ"
