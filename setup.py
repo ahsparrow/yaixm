@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 setup(
     name="yaixm",
-    version="0.1",
+    version="1.0.0",
     description="YAML/JSON simplified AIXM",
     url="https://github.com/ahsparrow/yaixm",
     author="Alan Sparrow",
