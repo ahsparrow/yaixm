@@ -190,7 +190,7 @@ def make_tnp_type(ils="OTHER"):
             out_type = "PROHIBITED"
         elif as_type == "R":
             out_type = "RESTRICTED"
-        elif as_type in ["ATZ", "CTA", "CTR", "TMA", "RAT"]:
+        elif as_type in ["ATZ", "CTA", "CTR", "TMA"] or local_type == "RAT":
             out_type = "CTA/CTR"
         elif local_type == "MATZ":
             out_type = "MATZ"
