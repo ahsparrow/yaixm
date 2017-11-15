@@ -145,6 +145,8 @@ def make_openair_type(atz="CTR", ils="G"):
             out_type = "G"
         elif local_type == "RAT":
             out_type = "A"
+        elif local_type == "D_OTHER":
+            out_type = "Q"
         else:
             out_type = volume.get('class') or feature.get('class') or "OTHER"
 
@@ -202,6 +204,8 @@ def make_tnp_type(ils="OTHER"):
             out_type = "AIRWAYS"
         elif local_type == "ILS":
             out_type = ils
+        elif local_type == "D_OTHER":
+            out_type = "DANGER"
         else:
             out_type = "OTHER"
 
