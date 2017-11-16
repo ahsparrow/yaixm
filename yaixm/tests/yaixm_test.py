@@ -216,3 +216,12 @@ def test_merge_loa():
 
     names = [feature['name'] for feature in airspace]
     assert "TEST BOX" in names
+
+def test_header():
+    input = dict(TEST_AIRSPACE)
+
+    converter = yaixm.Openair(header="Header line 1\nHeader line 2")
+    oa = converter.convert(input['airspace'])
+
+    assert oa.splitlines()[0] == "* Header line 1"
+    assert oa.splitlines()[1] == "* Header line 2"

@@ -366,6 +366,10 @@ definitions:
         minimum: 1
         maximum: 1
 
+      # Release note
+      note:
+        type: string
+
     required: [airac_date, timestamp, schema_version]
     additionalProperties: False
 

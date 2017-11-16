@@ -252,7 +252,13 @@ class Converter():
         return output
 
     def start(self):
-        return []
+        hdr = []
+        if self.header:
+            hdr = ["%s %s" % (self.comment_char, line)
+                    for line in self.header.splitlines()]
+            hdr.append(self.comment_char)
+
+        return hdr
 
     def end(self):
         return []
@@ -293,10 +299,12 @@ class Openair(Converter):
                   "{1[d]:03d}:{1[m]:02d}:{1[s]:02d} {1[h]}"
 
     def __init__(self, filter_func=default_filter, name_func=default_name,
-                 type_func=default_openair_type):
+                 type_func=default_openair_type, header=None):
         self.filter_func = filter_func
         self.name_func = name_func
         self.type_func = type_func
+        self.header = header
+        self.comment_char ="*"
 
     def do_name(self, name):
         return ["AN %s" % name]
@@ -363,11 +371,14 @@ class Tnp(Converter):
                  "{1[h]}{1[d]:03d}{1[m]:02d}{1[s]:02d}"
 
     def __init__(self, filter_func=default_filter, name_func=default_name,
-                 class_func=default_tnp_class, type_func=default_tnp_type):
+                 class_func=default_tnp_class, type_func=default_tnp_type,
+                 header=None):
         self.filter_func = filter_func
         self.name_func = name_func
         self.class_func = class_func
         self.type_func = type_func
+        self.header = header
+        self.comment_char = "#"
 
     def end(self):
         return ['#', 'END']
