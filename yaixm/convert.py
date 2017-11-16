@@ -256,8 +256,6 @@ class Converter():
         if self.header:
             hdr = ["%s %s" % (self.comment_char, line)
                     for line in self.header.splitlines()]
-            hdr.append(self.comment_char)
-
         return hdr
 
     def end(self):
