@@ -154,12 +154,17 @@ def dms(latlon):
 
 # Convert latitude or longitude string to radians
 def radians(latlon):
+    degs = degrees(latlon)
+    return math.radians(degs)
+
+# Convert latitude or longitude string to degrees
+def degrees(latlon):
     x = dms(latlon)
     degs = x['d'] + x['m'] / 60.0 + x['s'] / 3600.0
     if x['h'] in "WS":
         degs = -degs
 
-    return math.radians(degs)
+    return degs
 
 # Get (approximate) minimum and maximum latitude for volume, in radians
 def minmax_lat(volume):
