@@ -30,7 +30,7 @@ setup(
             "yaixm_tnp = yaixm.cli:tnp",
             "yaixm_json = yaixm.cli:to_json",
             "yaixm_merge = yaixm.cli:merge",
-            "yaxim_geojson = yaixm.cli:geojson"
+            "yaixm_geojson = yaixm.cli:geojson"
         ]
     }
 )
