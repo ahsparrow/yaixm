@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 setup(
     name="yaixm",
-    version="1.0.2",
+    version="1.1.0",
     description="YAML/JSON simplified AIXM",
     url="https://github.com/ahsparrow/yaixm",
     author="Alan Sparrow",
@@ -29,7 +29,8 @@ setup(
             "yaixm_openair = yaixm.cli:openair",
             "yaixm_tnp = yaixm.cli:tnp",
             "yaixm_json = yaixm.cli:to_json",
-            "yaixm_merge = yaixm.cli:merge"
+            "yaixm_merge = yaixm.cli:merge",
+            "yaxim_geojson = yaixm.cli:geojson"
         ]
     }
 )

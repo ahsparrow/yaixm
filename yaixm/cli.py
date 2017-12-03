@@ -127,3 +127,29 @@ def merge():
     merged = {'airspace': merge_loa(airspace, loa)}
 
     json.dump(merged, args.output_file, sort_keys=True, indent=4)
+
+def geojson():
+    # Do the import here to avoid hard dependency on pygeodesy
+    try:
+        from .geojson import geojson as convert_geojson
+    except ModuleNotFoundError:
+        print("ERROR: GeoJSON requires the PyGeodesy package")
+        sys.exit(1)
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("airspace_file", nargs="?",
+                        help="YAML airspace file",
+                        type=argparse.FileType("r"), default=sys.stdin)
+    parser.add_argument("geojson_file", nargs="?",
+                        help="GeoJSON output file, stdout if not specified",
+                        type=argparse.FileType("w"),
+                        default=sys.stdout)
+    args = parser.parse_args()
+
+    # Load airspace
+    airspace = load(args.airspace_file)
+
+    # Convert to GeoJSON
+    gjson = convert_geojson(airspace['airspace'])
+
+    json.dump(gjson, args.geojson_file, sort_keys=True, indent=4)

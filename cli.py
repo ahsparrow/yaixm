@@ -17,6 +17,8 @@ elif script_name == "oasort":
     yaixm.cli.oasort()
 elif script_name == "merge":
     yaixm.cli.merge()
+elif script_name == "geojson":
+    yaixm.cli.geojson()
 else:
     print("Unrecognised script: " + script_name, file=sys.stderr)
 
