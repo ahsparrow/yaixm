@@ -148,6 +148,9 @@ def merge_loa(airspace, loas):
 # Convert latitude or longitude string to floating point degrees
 def parse_deg(deg_str):
     m = DMS_RE.match(deg_str)
+    if m is None:
+        return None
+
     deg = int(m['d']) +  int(m['m']) / 60 + int(m['s']) / 3600
     if m['h'] in "SW":
         deg = -deg
