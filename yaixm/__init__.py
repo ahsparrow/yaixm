@@ -16,7 +16,7 @@
 # along with YAIXM.  If not, see <http://www.gnu.org/licenses/>.
 
 from .helpers import load, validate, ordered_map_representer, merge_loa
-from .helpers import parse_latlon
+from .helpers import parse_latlon, parse_deg
 from .convert import Openair, Tnp, make_filter, make_openair_type, \
                      make_tnp_class, make_tnp_type
 
