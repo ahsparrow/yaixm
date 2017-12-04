@@ -1,6 +1,5 @@
 from copy import deepcopy
 import json
-import math
 import tempfile
 
 import yaml
@@ -167,12 +166,10 @@ def test_representer():
     yaml.add_representer(dict, yaixm.ordered_map_representer)
     yaml.dump(input)
 
-def test_radians():
-    x = yaixm.radians("521234N")
-    assert abs(x - math.radians(52 + 12/60 + 34/3600)) < 1E-6
-
-    x = yaixm.radians("0025432W")
-    assert abs(x + math.radians(2 + 54/60 + 32/3600)) < 1E-6
+def test_latlon():
+    lat, lon = yaixm.parse_latlon("521234N 1234455E")
+    assert abs(lat - (52 + 12 / 60 + 34 / 3600)) < 1E-6
+    assert abs(lon - (123 + 44 / 60 + 55 / 3600)) < 1E-6
 
 def test_timestamp():
     input = "2017-09-13T09:00:00Z"

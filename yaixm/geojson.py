@@ -17,21 +17,13 @@
 
 from pygeodesy.ellipsoidalVincenty import LatLon
 
-from .helpers import degrees
-
-def latlon(latlon_str):
-    lat, lon = latlon_str.split()
-    return degrees(lat), degrees(lon)
-
-def lonlat(latlon_str):
-    lat, lon = latlon_str.split()
-    return degrees(lon), degrees(lat)
+from .helpers import parse_latlon
 
 def do_line(line):
-    return [lonlat(i) for i in line]
+    return [parse_latlon(p)[::-1] for p in line]
 
 def do_circle(circle, resolution):
-    centre = LatLon(*latlon(circle['centre']))
+    centre = LatLon(*parse_latlon(circle['centre']))
     delta = 90 / resolution
 
     # Get radius, in metres
@@ -48,9 +40,9 @@ def do_circle(circle, resolution):
     return points
 
 def do_arc(arc, from_lonlat, resolution):
-    centre = LatLon(*latlon(arc['centre']))
+    centre = LatLon(*parse_latlon(arc['centre']))
     from_point = LatLon(from_lonlat[1], from_lonlat[0])
-    to_point = LatLon(*latlon(arc['to']))
+    to_point = LatLon(*parse_latlon(arc['to']))
 
     # Get radius, in metres
     radius_str = arc['radius']

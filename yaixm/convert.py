@@ -15,9 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with YAIXM.  If not, see <http://www.gnu.org/licenses/>.
 
-import math
-
-from .helpers import dms, level, minmax_lat
+from .helpers import parse_latlon, level, minmax_lat
 
 OBSTACLE_TYPES = {
    'BLDG': "BUILDING",
@@ -77,7 +75,7 @@ def make_filter(noatz=True, microlight=True, hgl=True,
 
         # Min/max latitude
         min_lat, max_lat = minmax_lat(volume)
-        if (min_lat > math.radians(north)) or (max_lat < math.radians(south)):
+        if (min_lat > north) or (max_lat < south):
             return False
 
         return True
@@ -215,11 +213,26 @@ def make_tnp_type(ils="OTHER"):
 
 default_tnp_type = make_tnp_type()
 
+# Return DMS values for floating point degrees
+def dms(deg):
+    if deg < 0:
+        ns = "S"
+        ew = "W"
+        deg = -deg
+    else:
+        ns = "N"
+        ew = "E"
+
+    secs = round(deg * 3600)
+    mins, secs = divmod(secs, 60)
+    degs, mins = divmod(mins, 60)
+    return {'d': degs, 'm': mins, 's': secs, 'ns': ns, 'ew': ew}
+
 # Base class for TNP and OpenAir converters
 class Converter():
     def format_latlon(self, latlon):
-        return self.__class__.latlon_fmt.format(*[dms(x)
-                                                  for x in latlon.split()])
+        lat, lon = parse_latlon(latlon)
+        return self.__class__.latlon_fmt.format(dms(lat), dms(lon))
 
     def do_line(self, line):
         output = []
@@ -293,8 +306,8 @@ class Converter():
 
 # Openair converter
 class Openair(Converter):
-    latlon_fmt =  "{0[d]:02d}:{0[m]:02d}:{0[s]:02d} {0[h]} "\
-                  "{1[d]:03d}:{1[m]:02d}:{1[s]:02d} {1[h]}"
+    latlon_fmt =  "{0[d]:02d}:{0[m]:02d}:{0[s]:02d} {0[ns]} "\
+                  "{1[d]:03d}:{1[m]:02d}:{1[s]:02d} {1[ew]}"
 
     def __init__(self, filter_func=default_filter, name_func=default_name,
                  type_func=default_openair_type, header=None):
@@ -365,8 +378,8 @@ class Openair(Converter):
 # IMPORTANT - this implemention starts each airspace block with TITLE,
 # followed by CLASS/TYPE. This may not compatible with some programs.
 class Tnp(Converter):
-    latlon_fmt = "{0[h]}{0[d]:02d}{0[m]:02d}{0[s]:02d} "\
-                 "{1[h]}{1[d]:03d}{1[m]:02d}{1[s]:02d}"
+    latlon_fmt = "{0[ns]}{0[d]:02d}{0[m]:02d}{0[s]:02d} "\
+                 "{1[ew]}{1[d]:03d}{1[m]:02d}{1[s]:02d}"
 
     def __init__(self, filter_func=default_filter, name_func=default_name,
                  class_func=default_tnp_class, type_func=default_tnp_type,

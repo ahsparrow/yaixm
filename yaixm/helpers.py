@@ -19,6 +19,7 @@ from copy import deepcopy
 import json as _json
 import logging
 import math
+import re
 
 import jsonschema
 import pkg_resources
@@ -58,8 +59,12 @@ PPRINT_PROP_LIST = [
     "notes",
 ]
 
+# Latitude/longitude regex
+DMS_PATTERN = "(?P<d>[0-9]{2}|[01][0-9]{2})(?P<m>[0-5][0-9])(?P<s>[0-5][0-9])(?P<h>[NESW])"
+DMS_RE = re.compile(DMS_PATTERN)
+
 # Conversion factor
-NM_TO_RADIANS = 1852.0 / 6371000
+NM_TO_DEGREES = 1 / 60
 
 # Load data from either YAML or JSON
 def load(stream, json=False):
@@ -140,48 +145,35 @@ def merge_loa(airspace, loas):
 
     return merge_airspace
 
-# Split latitude or longitude string into hemisphere, degrees, minutes and
-# seconds
-def dms(latlon):
-    hemi = latlon[-1]
-    assert ((hemi in "NS" and len(latlon) == 7) or
-            (hemi in "EW" and len(latlon) == 8))
+# Convert latitude or longitude string to floating point degrees
+def parse_deg(deg_str):
+    m = DMS_RE.match(deg_str)
+    deg = int(m['d']) +  int(m['m']) / 60 + int(m['s']) / 3600
+    if m['h'] in "SW":
+        deg = -deg
+    return deg
 
-    return {'h': hemi,
-            'd': int(latlon[:-5]),
-            'm': int(latlon[-5:-3]),
-            's': int(latlon[-3:-1])}
+# Convert latlon string to pair of floats
+def parse_latlon(latlon_str):
+    lat, lon = [parse_deg(d) for d in latlon_str.split()]
+    return lat, lon
 
-# Convert latitude or longitude string to radians
-def radians(latlon):
-    degs = degrees(latlon)
-    return math.radians(degs)
-
-# Convert latitude or longitude string to degrees
-def degrees(latlon):
-    x = dms(latlon)
-    degs = x['d'] + x['m'] / 60.0 + x['s'] / 3600.0
-    if x['h'] in "WS":
-        degs = -degs
-
-    return degs
-
-# Get (approximate) minimum and maximum latitude for volume, in radians
+# Get (approximate) minimum and maximum latitude for volume
 def minmax_lat(volume):
     lat_arr = []
     for bdry in volume['boundary']:
         if 'circle' in bdry:
             radius = float(bdry['circle']['radius'].split()[0])
-            clat = bdry['circle']['centre'].split()[0]
-            lat_arr.append(radians(clat) + radius * NM_TO_RADIANS)
-            lat_arr.append(radians(clat) - radius * NM_TO_RADIANS)
+            clat, clon = parse_latlon(bdry['circle']['centre'])
+            lat_arr.append(clat + radius * NM_TO_DEGREES)
+            lat_arr.append(clat - radius * NM_TO_DEGREES)
         elif 'arc' in bdry:
             radius = float(bdry['arc']['radius'].split()[0])
-            clat = bdry['arc']['centre'].split()[0]
-            lat_arr.append(radians(clat) + radius * NM_TO_RADIANS)
-            lat_arr.append(radians(clat) - radius * NM_TO_RADIANS)
+            clat, clon = parse_latlon(bdry['arc']['centre'])
+            lat_arr.append(clat + radius * NM_TO_DEGREES)
+            lat_arr.append(clat - radius * NM_TO_DEGREES)
         elif 'line' in bdry:
-            lat_arr.extend([radians(b.split()[0]) for b in bdry['line']])
+            lat_arr.extend([parse_latlon(b)[0] for b in bdry['line']])
 
     return min(lat_arr), max(lat_arr)
 
