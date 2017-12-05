@@ -180,7 +180,7 @@ def make_tnp_class(atz=None, ils=None):
             return ils
         elif localtype == "RAT":
             return "A"
-        elif localtype in ["GLIDER", "NOATZ", "UL"]:
+        elif as_type == "OTHER" and localtype in ["GLIDER", "NOATZ", "UL"]:
             return "G"
         else:
             return None
