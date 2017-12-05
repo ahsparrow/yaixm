@@ -130,12 +130,12 @@ def default_name(volume, feature):
 def make_openair_type(atz="CTR", ils="OTHER"):
     def openair_type(volume, feature):
         as_type = feature['type']
-        local_type = feature.get('localtype')
+        localtype = feature.get('localtype')
         rules = feature.get('rules', []) + volume.get('rules', [])
 
         if as_type == "D_OTHER" and localtype == "GLIDER":
             out_type = "GSEC"
-        elif as_type in ["D", "D_OTHER"] or local_type == "DZ":
+        elif as_type in ["D", "D_OTHER"] or localtype == "DZ":
             out_type = "Q"
         elif as_type == "R":
             out_type = "R"
@@ -143,17 +143,17 @@ def make_openair_type(atz="CTR", ils="OTHER"):
             out_type = "P"
         elif as_type == "ATZ":
             out_type = atz
-        elif local_type == "ILS":
+        elif localtype == "ILS":
             out_type = ils
-        elif local_type == "MATZ":
+        elif localtype == "MATZ":
             out_type = "MATZ"
-        elif local_type == "TMZ" or "TMZ" in rules:
+        elif localtype == "TMZ" or "TMZ" in rules:
             out_type = "TMZ"
-        elif local_type == "RMZ" or "RMZ" in rules:
+        elif localtype == "RMZ" or "RMZ" in rules:
             out_type = "RMZ"
-        elif local_type in ["GLIDER", "NOATZ", "UL"]:
+        elif localtype in ["GLIDER", "NOATZ", "UL"]:
             out_type = "G"
-        elif local_type == "RAT":
+        elif localtype == "RAT":
             out_type = "A"
         else:
             out_type = volume.get('class') or feature.get('class') or "OTHER"
@@ -168,7 +168,7 @@ default_openair_type = make_openair_type()
 def make_tnp_class(atz=None, ils=None):
     def tnp_class(volume, feature):
         as_type = feature['type']
-        local_type = feature.get('localtype')
+        localtype = feature.get('localtype')
 
         if volume.get('class'):
             return volume['class']
@@ -176,11 +176,11 @@ def make_tnp_class(atz=None, ils=None):
             return feature['class']
         elif as_type == "ATZ":
             return atz
-        elif local_type == "ILS":
+        elif localtype == "ILS":
             return ils
-        elif local_type == "RAT":
+        elif localtype == "RAT":
             return "A"
-        elif local_type in ["GLIDER", "NOATZ", "UL"]:
+        elif localtype in ["GLIDER", "NOATZ", "UL"]:
             return "G"
         else:
             return None
@@ -203,26 +203,26 @@ default_tnp_class = make_tnp_class()
 def make_tnp_type(ils="OTHER"):
     def tnp_type(volume, feature):
         as_type = feature['type']
-        local_type = feature.get('localtype')
+        localtype = feature.get('localtype')
         rules = feature.get('rules', []) + volume.get('rules', [])
 
-        if as_type == "D" or local_type == "DZ":
+        if as_type == "D" or localtype == "DZ":
             out_type = "DANGER"
         elif as_type == "P":
             out_type = "PROHIBITED"
         elif as_type == "R":
             out_type = "RESTRICTED"
-        elif as_type in ["ATZ", "CTA", "CTR", "TMA"] or local_type == "RAT":
+        elif as_type in ["ATZ", "CTA", "CTR", "TMA"] or localtype == "RAT":
             out_type = "CTA/CTR"
-        elif local_type == "MATZ":
+        elif localtype == "MATZ":
             out_type = "MATZ"
-        elif local_type == "TMZ" or "TMZ" in rules:
+        elif localtype == "TMZ" or "TMZ" in rules:
             out_type = "TMZ"
-        elif local_type == "RMZ" or "RMZ" in rules:
+        elif localtype == "RMZ" or "RMZ" in rules:
             out_type = "RMZ"
         elif as_type == "AWY":
             out_type = "AIRWAYS"
-        elif local_type == "ILS":
+        elif localtype == "ILS":
             out_type = ils
         elif as_type == "D_OTHER" and localtype == "GLIDER":
             out_type = "GSEC"
