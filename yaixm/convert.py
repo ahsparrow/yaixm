@@ -116,14 +116,26 @@ def default_name(volume, feature):
         else:
             return feature['name']
 
-# Openair type function
+# Openair type function. Possible types are:
+#    A - G (class)
+#    P (prohibited)
+#    Q (danger)
+#    R (restricted)
+#    CTR (control area)
+#    RMZ (radio mandatory zone)
+#    TMZ (transponder mandatory zone)
+#    GSEC (gliding sector)
+#    MATZ (military ATZ)
+#    OTHER
 def make_openair_type(atz="CTR", ils="OTHER"):
     def openair_type(volume, feature):
         as_type = feature['type']
         local_type = feature.get('localtype')
         rules = feature.get('rules', []) + volume.get('rules', [])
 
-        if as_type in ["D", "D_OTHER"] or local_type == "DZ":
+        if as_type == "D_OTHER" and localtype == "GLIDER":
+            out_type = "GSEC"
+        elif as_type in ["D", "D_OTHER"] or local_type == "DZ":
             out_type = "Q"
         elif as_type == "R":
             out_type = "R"
@@ -177,7 +189,17 @@ def make_tnp_class(atz=None, ils=None):
 
 default_tnp_class = make_tnp_class()
 
-# TNP type function
+# TNP type function. Possible types are:
+#    AWY
+#    CTA/CTR
+#    DANGER
+#    GSEC
+#    MATZ
+#    OTHER
+#    PROHIBITED
+#    RESTRICTED
+#    RMZ
+#    TMZ
 def make_tnp_type(ils="OTHER"):
     def tnp_type(volume, feature):
         as_type = feature['type']
@@ -202,6 +224,8 @@ def make_tnp_type(ils="OTHER"):
             out_type = "AIRWAYS"
         elif local_type == "ILS":
             out_type = ils
+        elif as_type == "D_OTHER" and localtype == "GLIDER":
+            out_type = "GSEC"
         elif as_type == "D_OTHER":
             out_type = "DANGER"
         else:
