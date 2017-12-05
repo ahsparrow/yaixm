@@ -151,8 +151,8 @@ def parse_deg(deg_str):
     if m is None:
         return None
 
-    deg = int(m.group('d')) +  int(m.group('m')) / 60 + int(m.group('s')) / 3600
-    if m['h'] in "SW":
+    deg = int(m.group('d')) + int(m.group('m')) / 60 + int(m.group('s')) / 3600
+    if m.group('h') in "SW":
         deg = -deg
     return deg
 
