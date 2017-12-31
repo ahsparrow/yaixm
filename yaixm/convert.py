@@ -124,7 +124,7 @@ def default_name(volume, feature):
 #    CTR (control area)
 #    RMZ (radio mandatory zone)
 #    TMZ (transponder mandatory zone)
-#    GSEC (gliding sector)
+#    W (wave)
 #    MATZ (military ATZ)
 #    OTHER
 def make_openair_type(atz="CTR", ils="OTHER"):
@@ -134,7 +134,7 @@ def make_openair_type(atz="CTR", ils="OTHER"):
         rules = feature.get('rules', []) + volume.get('rules', [])
 
         if as_type == "D_OTHER" and localtype == "GLIDER":
-            out_type = "GSEC"
+            out_type = "W"
         elif as_type in ["D", "D_OTHER"] or localtype == "DZ":
             out_type = "Q"
         elif as_type == "R":
