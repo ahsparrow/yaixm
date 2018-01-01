@@ -127,35 +127,66 @@ def default_name(volume, feature):
 #    W (wave)
 #    MATZ (military ATZ)
 #    OTHER
-def make_openair_type(atz="CTR", ils="OTHER"):
+def make_openair_type(atz="CTR", ils="OTHER", glider="G", noatz="G", ul="G"):
     def openair_type(volume, feature):
         as_type = feature['type']
         localtype = feature.get('localtype')
         rules = feature.get('rules', []) + volume.get('rules', [])
 
-        if as_type == "D_OTHER" and localtype == "GLIDER":
-            out_type = "W"
-        elif as_type in ["D", "D_OTHER"] or localtype == "DZ":
-            out_type = "Q"
-        elif as_type == "R":
+        if as_type == "R":
+            # Restricted area
             out_type = "R"
         elif as_type == "P":
+            # Prohibited area
             out_type = "P"
+        elif as_type == "D":
+            # Danger area
+            out_type = "Q"
         elif as_type == "ATZ":
+            # ATZ - use configurable type
             out_type = atz
-        elif localtype == "ILS":
-            out_type = ils
-        elif localtype == "MATZ":
-            out_type = "MATZ"
-        elif localtype == "TMZ" or "TMZ" in rules:
+        elif as_type == "D_OTHER":
+            if localtype == "GLIDER":
+                # Wave box
+                out_type = "W"
+            else:
+                # Danger area (Drop zone, HIRTA, etc.)
+                out_type = "Q"
+        elif as_type == "OTHER":
+            if localtype == "RAT":
+                # RA(T)
+                out_type = "A"
+            elif localtype == "MATZ":
+                # MATZ
+                out_type = "MATZ"
+            elif localtype == "ILS":
+                # ILS = use configurable type
+                out_type = ils
+            elif localtype == "GLIDER":
+                # Gliding sites - use configuraable type
+                out_type = glider
+            elif localtype == "NOATZ":
+                # Non ATZ airfield use configurable type
+                out_type = noatz
+            elif localtype == "UL":
+                # Ultralight strips - use configurable type
+                out_type = ul
+            elif localtype == "TMZ":
+                # TMZ
+                out_type = "TMZ"
+            elif localtype == "RMZ":
+                # RMZ
+                out_type = "RMZ"
+            else:
+                out_type = "OTHER"
+        elif "TMZ" in rules:
+            # TMZ (override airspace class)
             out_type = "TMZ"
-        elif localtype == "RMZ" or "RMZ" in rules:
+        elif "RMZ" in rules:
+            # RMZ (override airspace class)
             out_type = "RMZ"
-        elif localtype in ["GLIDER", "NOATZ", "UL"]:
-            out_type = "G"
-        elif localtype == "RAT":
-            out_type = "A"
         else:
+            # Fallback is airspace class, or OTHER if no class
             out_type = volume.get('class') or feature.get('class') or "OTHER"
 
         return out_type
@@ -165,24 +196,41 @@ def make_openair_type(atz="CTR", ils="OTHER"):
 default_openair_type = make_openair_type()
 
 # TNP class function
-def make_tnp_class(atz=None, ils=None):
+def make_tnp_class(atz=None, ils=None, glider="G", noatz="G", ul="G"):
     def tnp_class(volume, feature):
         as_type = feature['type']
         localtype = feature.get('localtype')
 
-        if volume.get('class'):
+        if as_type == "ATZ":
+            # ATZ  - use configurable class
+            return atz
+        elif as_type == "OTHER":
+            if localtype == "RAT":
+                # RA(T)
+                return "A"
+            elif localtype == "ILS":
+                # ILS - use configurable class
+                return ils
+            elif localtype == "GLIDER":
+                # Gliding site - use configurable class
+                return glider
+            elif localtype == "NOATZ":
+                # Non-ATZ airfield - use configurable class
+                return noatz
+            elif localtype == "UL":
+                # Ultralight strip - use configurable class
+                return ul
+            else:
+                # Default is no class
+                return None
+        elif volume.get('class'):
+            # Volume class
             return volume['class']
         elif feature.get('class'):
+            # Feature class
             return feature['class']
-        elif as_type == "ATZ":
-            return atz
-        elif localtype == "ILS":
-            return ils
-        elif localtype == "RAT":
-            return "A"
-        elif as_type == "OTHER" and localtype in ["GLIDER", "NOATZ", "UL"]:
-            return "G"
         else:
+            # Default is no class
             return None
 
     return tnp_class
@@ -200,34 +248,44 @@ default_tnp_class = make_tnp_class()
 #    RESTRICTED
 #    RMZ
 #    TMZ
-def make_tnp_type(ils="OTHER"):
+def make_tnp_type(ils="OTHER", glider="OTHER"):
     def tnp_type(volume, feature):
         as_type = feature['type']
         localtype = feature.get('localtype')
         rules = feature.get('rules', []) + volume.get('rules', [])
 
-        if as_type == "D" or localtype == "DZ":
-            out_type = "DANGER"
+        if as_type == "R":
+            out_type = "RESTRICTED"
         elif as_type == "P":
             out_type = "PROHIBITED"
-        elif as_type == "R":
-            out_type = "RESTRICTED"
-        elif as_type in ["ATZ", "CTA", "CTR", "TMA"] or localtype == "RAT":
-            out_type = "CTA/CTR"
-        elif localtype == "MATZ":
-            out_type = "MATZ"
-        elif localtype == "TMZ" or "TMZ" in rules:
+        elif as_type == "D":
+            out_type = "DANGER"
+        elif "TMZ" in rules:
             out_type = "TMZ"
-        elif localtype == "RMZ" or "RMZ" in rules:
+        elif "RMZ" in rules:
             out_type = "RMZ"
         elif as_type == "AWY":
             out_type = "AIRWAYS"
-        elif localtype == "ILS":
-            out_type = ils
-        elif as_type == "D_OTHER" and localtype == "GLIDER":
-            out_type = "GSEC"
+        elif as_type in ["ATZ", "CTA", "CTR", "TMA"] or localtype == "RAT":
+            out_type = "CTA/CTR"
         elif as_type == "D_OTHER":
-            out_type = "DANGER"
+            if localtype == "GLIDER":
+                out_type = "GSEC"
+            else:
+                out_type = "DANGER"
+        elif as_type == "OTHER":
+            if localtype == "MATZ":
+                out_type = "MATZ"
+            elif localtype == "TMZ":
+                out_type = "TMZ"
+            elif localtype == "RMZ":
+                out_type = "RMZ"
+            elif localtype == "ILS":
+                out_type = ils
+            elif localtype == "GLIDER":
+                out_type = glider
+            else:
+                out_type = "OTHER"
         else:
             out_type = "OTHER"
 
