@@ -97,6 +97,8 @@ def default_name(volume, feature):
             localtype = feature['localtype']
             if localtype in ["NOATZ", "UL"]:
                 subs = "A/F"
+            elif localtype == "MATZ":
+                subs = "MATZ"
             elif localtype in ["DZ", "GVS", "HIRTA", "ILS", "LASER"]:
                 subs = localtype
             else:
