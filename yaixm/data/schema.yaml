@@ -67,7 +67,7 @@ definitions:
   # This is more restrictive than the AIXM Character3Type
   name: &name
     type: string
-    pattern: ^[A-Z][A-Z0-9]+(( |\-|/)[\(\)0-9A-Z]+)*$
+    pattern: ^[A-Z][A-Z0-9]+(( |\-|/|\')[\(\)0-9A-Z]+)*$
 
   # Array of notes
   notes: &notes
