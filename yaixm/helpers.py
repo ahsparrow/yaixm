@@ -189,3 +189,18 @@ def level(value):
         return int(value.split()[0])
     else:
         return 0
+
+# Return DMS values for floating point degrees
+def dms(deg):
+    if deg < 0:
+        ns = "S"
+        ew = "W"
+        deg = -deg
+    else:
+        ns = "N"
+        ew = "E"
+
+    secs = round(deg * 3600)
+    mins, secs = divmod(secs, 60)
+    degs, mins = divmod(mins, 60)
+    return {'d': degs, 'm': mins, 's': secs, 'ns': ns, 'ew': ew}

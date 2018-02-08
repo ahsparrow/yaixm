@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with YAIXM.  If not, see <http://www.gnu.org/licenses/>.
 
-from .helpers import parse_latlon, level, minmax_lat
+from .helpers import parse_latlon, level, minmax_lat, dms
 
 OBSTACLE_TYPES = {
    'BLDG': "BUILDING",
@@ -273,21 +273,6 @@ def make_tnp_type(ils="OTHER", glider="OTHER"):
     return tnp_type
 
 default_tnp_type = make_tnp_type()
-
-# Return DMS values for floating point degrees
-def dms(deg):
-    if deg < 0:
-        ns = "S"
-        ew = "W"
-        deg = -deg
-    else:
-        ns = "N"
-        ew = "E"
-
-    secs = round(deg * 3600)
-    mins, secs = divmod(secs, 60)
-    degs, mins = divmod(mins, 60)
-    return {'d': degs, 'm': mins, 's': secs, 'ns': ns, 'ew': ew}
 
 # Base class for TNP and OpenAir converters
 class Converter():
