@@ -60,7 +60,8 @@ PPRINT_PROP_LIST = [
 ]
 
 # Latitude/longitude regex
-DMS_PATTERN = "(?P<d>[0-9]{2}|[01][0-9]{2})(?P<m>[0-5][0-9])(?P<s>[0-5][0-9])(?P<h>[NESW])"
+# Pattern is: [D]DDMMSS[.s[s[s]]]H
+DMS_PATTERN = "(?P<d>[0-9]{2}|[01][0-9]{2})(?P<m>[0-5][0-9])(?P<s>[0-5][0-9](\.[0-9]{1,3})?)(?P<h>[NESW])"
 DMS_RE = re.compile(DMS_PATTERN)
 
 # Conversion factor
@@ -151,7 +152,7 @@ def parse_deg(deg_str):
     if m is None:
         return None
 
-    deg = int(m.group('d')) + int(m.group('m')) / 60 + int(m.group('s')) / 3600
+    deg = int(m.group('d')) + int(m.group('m')) / 60 + float(m.group('s')) / 3600
     if m.group('h') in "SW":
         deg = -deg
     return deg

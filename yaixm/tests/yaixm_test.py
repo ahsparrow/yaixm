@@ -171,6 +171,11 @@ def test_latlon():
     assert abs(lat - (52 + 12 / 60 + 34 / 3600)) < 1E-6
     assert abs(lon - (123 + 44 / 60 + 55 / 3600)) < 1E-6
 
+def test_latlon_dec():
+    lat, lon = yaixm.parse_latlon("521234.12N 1234455.345E")
+    assert abs(lat - (52 + 12 / 60 + 34.12 / 3600)) < 1E-6
+    assert abs(lon - (123 + 44 / 60 + 55.345 / 3600)) < 1E-6
+
 def test_timestamp():
     input = "2017-09-13T09:00:00Z"
     output  = yaixm.load("2017-09-13T09:00:00Z")
