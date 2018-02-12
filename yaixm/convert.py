@@ -331,8 +331,10 @@ class Converter():
         if obstacles:
             for obstacle in obstacles:
                 # Create dummy feature/volume
+                name = obstacle.get('name') or \
+                       OBSTACLE_TYPES.get(obstacle['type'], "OBSTACLE")
                 feature = {
-                    'name': OBSTACLE_TYPES.get(obstacle['type'], "OBSTACLE"),
+                    'name': name,
                     'type': "OTHER"
                 }
                 volume = {
