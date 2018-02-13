@@ -144,12 +144,14 @@ def geojson():
                         help="GeoJSON output file, stdout if not specified",
                         type=argparse.FileType("w"),
                         default=sys.stdout)
+    parser.add_argument("-r", "--resolution", type=int, default=15,
+                        help="Angular resolution, per 90 degrees")
     args = parser.parse_args()
 
     # Load airspace
     airspace = load(args.airspace_file)
 
     # Convert to GeoJSON
-    gjson = convert_geojson(airspace['airspace'])
+    gjson = convert_geojson(airspace['airspace'], resolution=args.resolution)
 
     json.dump(gjson, args.geojson_file, sort_keys=True, indent=4)
