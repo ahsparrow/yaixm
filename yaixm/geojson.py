@@ -83,8 +83,11 @@ def geojson(airspace, resolution=15):
             geo_feature = {'type': "Feature"}
 
             # Add properties
+            name =  volume.get('name') or feature.get('name')
+            if 'seqno' in volume:
+                name = "{} {}".format(name, volume['seqno'])
             properties = {
-                'name': volume.get('name') or feature.get('name'),
+                'name': name,
                 'lower': volume['lower'],
                 'upper': volume['upper'],
                 'type' :feature['type']
