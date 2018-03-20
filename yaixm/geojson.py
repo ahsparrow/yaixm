@@ -17,7 +17,7 @@
 
 from pygeodesy.ellipsoidalVincenty import LatLon
 
-from .helpers import parse_latlon
+from .helpers import parse_latlon, level
 
 def do_line(line):
     return [parse_latlon(p)[::-1] for p in line]
@@ -90,7 +90,8 @@ def geojson(airspace, resolution=15):
                 'name': name,
                 'lower': volume['lower'],
                 'upper': volume['upper'],
-                'type' :feature['type']
+                'type' : feature['type'],
+                'normlower': level(volume['lower'])
             }
 
             cls = volume.get('class') or feature.get('class')
