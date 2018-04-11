@@ -47,10 +47,10 @@ def make_filter(noatz=True, microlight=True, hgl=True,
         as_type = feature['type']
         as_localtype = feature.get('localtype')
 
-        # Exclude by name/type
+        # Exclude if all properties match
         if exclude:
             for e in exclude:
-                if as_name == e['name'] and as_type == e['type']:
+                if all([e[k] == feature.get(k) for k in e]):
                     return False
 
         # Non-ATZ airfields
