@@ -113,6 +113,12 @@ def default_name(volume, feature):
         else:
             subs = ""
 
+        if "NOTAM" in rules:
+            if subs:
+                subs += " (NOTAM)"
+            else:
+                subs = "(NOTAM)"
+
         if subs:
             return "%s %s" % (feature['name'], subs)
         else:
@@ -135,7 +141,9 @@ def make_openair_type(atz="CTR", ils="OTHER", glider="G", noatz="G", ul="G"):
         localtype = feature.get('localtype')
         rules = feature.get('rules', []) + volume.get('rules', [])
 
-        if as_type == "ATZ":
+        if "NOTAM" in rules:
+            out_type = "G"
+        elif as_type == "ATZ":
             out_type = atz
         elif as_type == "D":
             out_type = "Q"
@@ -189,8 +197,11 @@ def make_tnp_class(atz=None, ils=None, glider="G", noatz="G", ul="G"):
     def tnp_class(volume, feature):
         as_type = feature['type']
         localtype = feature.get('localtype')
+        rules = feature.get('rules', []) + volume.get('rules', [])
 
-        if as_type == "ATZ":
+        if "NOTAM" in rules:
+            return "G"
+        elif as_type == "ATZ":
             return atz
         elif as_type == "OTHER":
             if localtype == "GLIDER":

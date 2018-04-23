@@ -21,7 +21,8 @@ TEST_AIRSPACE = {
             'lower': "SFC",
             'upper': "2203 ft"
         }],
-        "type": "ATZ"
+        'type': "ATZ",
+        'rules': ["NOTAM"]
     }],
     "loa": [{
         "name": "LOA FOO",
@@ -227,3 +228,11 @@ def test_header():
 
     assert oa.splitlines()[0] == "* Header line 1"
     assert oa.splitlines()[1] == "* Header line 2"
+
+def test_notam():
+    input = dict(TEST_AIRSPACE)
+
+    converter = yaixm.Openair()
+    oa = converter.convert(input['airspace'])
+
+    assert "AN BENSON ATZ (NOTAM)" in oa

@@ -84,6 +84,7 @@ definitions:
       enum:
         - LOA       # Letter of agreement
         - NOSSR     # Non-SSR area
+        - NOTAM     # NOTAM activated
         - RAZ       # Radio advisory zone
         - RMZ       # Radio mandatory zone
         - SI        # Statutary Instrument
