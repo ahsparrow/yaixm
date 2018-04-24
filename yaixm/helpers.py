@@ -109,11 +109,12 @@ def find_volume(airspace, vid):
 # Merge LoAs into a copy of airspace and return merged copy
 def merge_loa(airspace, loas):
     merge_airspace = deepcopy(airspace)
+    merge_loas = deepcopy(loas)
 
     replace_vols = []
 
     # Add new features
-    for loa in loas:
+    for loa in merge_loas:
         for area in loa['areas']:
             # Add LOA rule to new features
             for feature in area['add']:
