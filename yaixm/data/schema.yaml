@@ -371,6 +371,14 @@ definitions:
       note:
         type: string
 
+      # Git commit
+      commit:
+        type: string
+        oneOf:
+        - pattern: ^unknown$
+        - pattern: ^changed$
+        - pattern: ^[0-9a-f]{40}$
+
     required: [airac_date, timestamp, schema_version]
     additionalProperties: False
 

@@ -10,7 +10,8 @@ TEST_AIRSPACE = {
     'release': {
         'airac_date': "2017-05-12T00:00:00Z",
         'timestamp': "2017-05-11T07:55:53+00:00",
-        'schema_version': 1
+        'schema_version': 1,
+        'commit': "unknown"
     },
     'airspace': [{
         'name': "BENSON",

@@ -52,7 +52,7 @@ PPRINT_PROP_LIST = [
     "circle", "arc", "line",
     "dir", "radius", "centre", "to",
 
-    "airac_date", "timestamp", "schema_version",
+    "commit", "airac_date", "timestamp", "schema_version",
 
     "position", "elevation",
 
