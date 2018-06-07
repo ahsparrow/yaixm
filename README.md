@@ -40,7 +40,7 @@ Contributing
 
 I'm Alan Sparrow
 
-YAIXM is on [GitHub](https://github.com/ahsparrow/yaixm).
+YAIXM is on [GitLab](https://gitlab.com/ahsparrow/yaixm).
 
-Please get in touch, via GitHub or otherwise. If you've got something
+Please get in touch, via GitLab or otherwise. If you've got something
 to contribute it would be very welcome.
