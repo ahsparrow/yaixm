@@ -3,7 +3,7 @@ setup(
     name="yaixm",
     version="1.4.2",
     description="YAML/JSON simplified AIXM",
-    url="https://github.com/ahsparrow/yaixm",
+    url="https://gitlab.com/ahsparrow/yaixm",
     author="Alan Sparrow",
     author_email="yaixm@freeflight.org.uk",
     license="GPL",
