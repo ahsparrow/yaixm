@@ -38,6 +38,13 @@ OBSTACLE_TYPES = {
    'WASTE': "WASTE PIPE"
 }
 
+# Format distance as nm or km
+def format_distance(distance):
+    dist, unit = distance.split()
+    if unit == "km":
+        dist = "%.3d" % (float(dist) / 1.852)
+    return dist
+
 # Filter factory
 def make_filter(noatz=True, microlight=True, hgl=True,
                 gliding_site=True, north=59, south=49, max_level=None,
@@ -401,8 +408,8 @@ class Openair(Converter):
 
     # Airspace circle boundary
     def do_circle(self, circle):
-        return [self.centre(circle['centre']),
-                "DC %s" % circle['radius'].split()[0]]
+        radius = format_distance(circle['radius'])
+        return [self.centre(circle['centre']), "DC %s" % radius]
 
     # Airspace boundary point
     def do_point(self, point):
@@ -478,13 +485,13 @@ class Tnp(Converter):
         return ["POINT=%s" % self.format_latlon(point)]
 
     def do_circle(self, circle):
-        radius = circle['radius'].split()[0]
+        radius = format_distance(circle['radius'])
         centre = self.format_latlon(circle['centre'])
         return ["CIRCLE RADIUS=%s CENTRE=%s" % (radius, centre)]
 
     def do_arc(self, arc, from_point):
         dir = "CLOCKWISE" if arc['dir'] == 'cw' else "ANTI-CLOCKWISE"
-        radius = arc['radius'].split()[0]
+        radius = format_distance(arc['radius'])
         centre = self.format_latlon(arc['centre'])
         to = self.format_latlon(arc['to'])
         return ["%s RADIUS=%s CENTRE=%s TO=%s" % (dir, radius, centre, to)]
