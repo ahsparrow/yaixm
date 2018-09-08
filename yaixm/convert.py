@@ -42,7 +42,7 @@ OBSTACLE_TYPES = {
 def format_distance(distance):
     dist, unit = distance.split()
     if unit == "km":
-        dist = "%.3d" % (float(dist) / 1.852)
+        dist = "%.3f" % (float(dist) / 1.852)
     return dist
 
 # Filter factory
