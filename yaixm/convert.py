@@ -121,7 +121,7 @@ def default_name(volume, feature):
 
         freq = volume.get('frequency') or feature.get('frequency')
         if freq:
-            subs.append("%f.3" % freq)
+            subs.append("%.3f" % freq)
 
         if subs:
             name = " ".join([feature['name'], " ".join(subs)])
