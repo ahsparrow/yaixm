@@ -123,7 +123,11 @@ def default_name(volume, feature):
         if freq:
             subs.append("%f.3" % freq)
 
-        name = " ".join([feature['name'], " ".join(subs)])
+        if subs:
+            name = " ".join([feature['name'], " ".join(subs)])
+        else:
+            name = feature['name']
+
         return name
 
 # Openair type function. Possible types are:
