@@ -346,6 +346,27 @@ definitions:
           - WASTE       # Waste pipe
 
   #--------------------------------------------------------------------
+  # Services
+
+  service: &service
+    type: object
+    properties:
+      callsign:
+        type: string
+        pattern: ^[A-Z][A-Z]+(( )[A-Z]+)*$
+
+      frequency:
+        type: number
+        minimum: 118
+        maximum: 136
+        multipleOf: 0.005
+
+      controls:
+        type: array
+        items: *id
+        minItems: 1
+
+  #--------------------------------------------------------------------
   # Release header
 
   release: &release
@@ -402,6 +423,10 @@ properties:
     type: array
     items: *obstacle
     minItems: 1
+  service:
+    type: array
+    items: *service
+    minItems: 1
 
 oneOf:
   # Allow individual YAIXM files to pass check
@@ -412,6 +437,7 @@ oneOf:
         - required: [loa]
         - required: [rat]
         - required: [obstacle]
+        - required: [service]
 
   # Otherwise must have at least the release header and airspace
   - required: [release, airspace]
