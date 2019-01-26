@@ -147,6 +147,22 @@ def merge_loa(airspace, loas):
 
     return merge_airspace
 
+# Merge radio frequencies into airsace
+def merge_service(airspace, service):
+    merge_airspace = deepcopy(airspace)
+
+    for feature in merge_airspace:
+        freq = service.get(feature.get('id'))
+        if freq:
+            feature['frequency'] = freq
+
+        for volume in feature['geometry']:
+            freq = service.get(volume.get('id'))
+            if freq:
+                volume['frequency'] = freq
+
+    return merge_airspace
+
 # Convert latitude or longitude string to floating point degrees
 def parse_deg(deg_str):
     m = DMS_RE.match(deg_str)

@@ -100,36 +100,31 @@ def default_name(volume, feature):
         return volume['name']
 
     else:
+        subs = []
         if 'localtype' in feature:
             localtype = feature['localtype']
             if localtype in ["NOATZ", "UL"]:
-                subs = "A/F"
+                subs.append("A/F")
             elif localtype == "MATZ":
-                subs = "MATZ"
+                subs.append("MATZ")
             elif localtype in ["DZ", "GVS", "HIRTA", "ILS", "LASER"]:
-                subs = localtype
-            else:
-                subs = ""
+                subs.append(localtype)
 
         elif feature['type'] in ["ATZ"]:
-            subs = feature['type']
+            subs.append(feature['type'])
 
         elif "RAZ" in rules:
-            subs = "RAZ"
-
-        else:
-            subs = ""
+            subs.append("RAZ")
 
         if "NOTAM" in rules:
-            if subs:
-                subs += " (NOTAM)"
-            else:
-                subs = "(NOTAM)"
+            subs.append("(NOTAM)")
 
-        if subs:
-            return "%s %s" % (feature['name'], subs)
-        else:
-            return feature['name']
+        freq = volume.get('frequency') or feature.get('frequency')
+        if freq:
+            subs.append("%f.3" % freq)
+
+        name = " ".join([feature['name'], " ".join(subs)])
+        return name
 
 # Openair type function. Possible types are:
 #    A - G (class)

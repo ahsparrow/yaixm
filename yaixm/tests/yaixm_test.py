@@ -24,6 +24,16 @@ TEST_AIRSPACE = {
         }],
         'type': "ATZ",
         'rules': ["NOTAM"]
+    }, {
+        'name': "FOOBAR",
+        'geometry': [{
+            'id': "foobar",
+            'boundary': [{'circle': {'centre': "513654N 0010545W",
+                                     'radius': "2 nm"}}],
+            'lower': "SFC",
+            'upper': "2203 ft"
+        }],
+        'type': "CTA"
     }],
     "loa": [{
         "name": "LOA FOO",
@@ -139,7 +149,7 @@ def test_openair():
     input = dict(TEST_AIRSPACE)
     converter = yaixm.Openair()
     oa = converter.convert(input['airspace'])
-    assert len(oa.split("\n")) == 7
+    assert len(oa.split("\n")) == 14
 
 def test_openair_name():
     def name_func(feature, volume):
@@ -190,13 +200,13 @@ def test_make_filter():
     f = yaixm.make_filter()
     converter = yaixm.Openair(filter_func=f)
     oa = converter.convert(input['airspace'])
-    assert len(oa.split("\n")) == 7
+    assert len(oa.split("\n")) == 14
 
     # Filter by name
     f = yaixm.make_filter(exclude=[{'name': "BENSON", 'type': "ATZ"}])
     converter = yaixm.Openair(filter_func=f)
     oa = converter.convert(input['airspace'])
-    assert oa == ""
+    assert len(oa.split("\n")) == 7
 
     # Filter by latitude
     f = yaixm.make_filter(north=50)
@@ -221,6 +231,12 @@ def test_merge_loa():
     names = [feature['name'] for feature in airspace]
     assert "TEST BOX" in names
 
+def test_merge_service():
+    service = {'foobar': 123.4}
+
+    airspace = yaixm.merge_service(TEST_AIRSPACE['airspace'], service)
+    assert 'frequency' in airspace[1]['geometry'][0]
+
 def test_header():
     input = dict(TEST_AIRSPACE)
 
@@ -237,3 +253,12 @@ def test_notam():
     oa = converter.convert(input['airspace'])
 
     assert "AN BENSON ATZ (NOTAM)" in oa
+
+def test_openair_freq():
+    service = {'foobar': 123.4}
+    airspace = yaixm.merge_service(TEST_AIRSPACE['airspace'], service)
+
+    converter = yaixm.Openair()
+    oa = converter.convert(airspace)
+
+    assert "AN FOOBAR 123.400" in oa
