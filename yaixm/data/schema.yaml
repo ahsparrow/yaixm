@@ -193,7 +193,7 @@ definitions:
       # Overrides class in parent airspace
       class: *class
 
-      # Identifies volume for LoA replacement
+      # Identifies volume (for LoA replacement and frequency assignment)
       id: *id
 
       lower:
@@ -229,6 +229,9 @@ definitions:
     properties:
       # Overriden by class in child volume
       class: *class
+
+      # Identifies feature (for frequency assignment)
+      id: *id
 
       # Optional, assumed JOINT if not specified
       controltype: *controltype

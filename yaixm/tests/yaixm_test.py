@@ -26,8 +26,8 @@ TEST_AIRSPACE = {
         'rules': ["NOTAM"]
     }, {
         'name': "FOOBAR",
+        'id': "foobar",
         'geometry': [{
-            'id': "foobar",
             'boundary': [{'circle': {'centre': "513654N 0010545W",
                                      'radius': "2 nm"}}],
             'lower': "SFC",
@@ -235,7 +235,7 @@ def test_merge_service():
     service = {'foobar': 123.4}
 
     airspace = yaixm.merge_service(TEST_AIRSPACE['airspace'], service)
-    assert 'frequency' in airspace[1]['geometry'][0]
+    assert 'frequency' in airspace[1]
 
 def test_header():
     input = dict(TEST_AIRSPACE)
