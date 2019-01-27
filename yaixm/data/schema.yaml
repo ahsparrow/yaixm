@@ -362,12 +362,13 @@ definitions:
         type: number
         minimum: 118
         maximum: 136
-        multipleOf: 0.005
 
       controls:
         type: array
         items: *id
         minItems: 1
+
+    required: [callsign, frequency, controls]
 
   #--------------------------------------------------------------------
   # Release header
