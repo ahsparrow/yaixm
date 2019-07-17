@@ -171,7 +171,7 @@ def make_openair_type(atz="CTR", ils="OTHER", glider="G", noatz="G", ul="G"):
             elif localtype == "NOATZ":
                 out_type = noatz
             elif localtype == "RAT":
-                out_type = "A"
+                out_type = "P"
             elif localtype == "TMZ":
                 out_type = "TMZ"
             elif localtype == "UL":
@@ -217,8 +217,6 @@ def make_tnp_class(atz=None, ils=None, glider="G", noatz="G", ul="G"):
                 return ils
             elif localtype == "NOATZ":
                 return noatz
-            elif localtype == "RAT":
-                return "A"
             elif localtype == "UL":
                 return ul
             else:
@@ -271,7 +269,7 @@ def make_tnp_type(ils="OTHER", glider="OTHER"):
             elif localtype == "MATZ":
                 out_type = "MATZ"
             elif localtype == "RAT":
-                out_type = "CTA/CTR"
+                out_type = "PROHIBITED"
             elif localtype == "RMZ":
                 out_type = "RMZ"
             elif localtype == "TMZ":
