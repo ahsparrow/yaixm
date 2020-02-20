@@ -19,7 +19,7 @@ import argparse
 import json
 import sys
 
-from .convert import Openair, Tnp
+from .convert import Openair, Tnp, seq_name
 from .helpers import load, validate, merge_loa
 
 def check():
@@ -47,13 +47,18 @@ def openair():
                         help="Openair output file, stdout if not specified",
                         type=argparse.FileType("w", encoding="ascii"),
                         default=sys.stdout)
+    parser.add_argument("--comp",
+                        help="Competition airspace", action="store_true")
     args = parser.parse_args()
 
     # Load airspace
     airspace = load(args.airspace_file)
 
     # Convert to openair
-    convert = Openair()
+    if args.comp:
+        convert = Openair(name_func=seq_name)
+    else:
+        convert = Openair()
     oa = convert.convert(airspace['airspace'])
 
     # Don't accept anything other than ASCII

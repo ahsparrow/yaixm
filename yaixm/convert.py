@@ -92,43 +92,49 @@ def make_filter(noatz=True, microlight=True, hgl=True,
 # Default filter includes everything
 default_filter = make_filter()
 
-# Default name
-def default_name(volume, feature):
-    rules = feature.get('rules', []) + volume.get('rules', [])
-
+# Mame function
+def name_func(volume, feature, add_seqno=False):
     if 'name' in volume:
-        return volume['name']
-
+        name = volume['name']
     else:
-        subs = []
+        name = feature['name']
+        rules = feature.get('rules', []) + volume.get('rules', [])
+
         if 'localtype' in feature:
             localtype = feature['localtype']
             if localtype in ["NOATZ", "UL"]:
-                subs.append("A/F")
-            elif localtype == "MATZ":
-                subs.append("MATZ")
-            elif localtype in ["DZ", "GVS", "HIRTA", "ILS", "LASER"]:
-                subs.append(localtype)
+                name += " A/F"
+            elif localtype in ["MATZ", "DZ", "GVS", "HIRTA", "ILS", "LASER"]:
+                name += " " + localtype
 
         elif feature['type'] in ["ATZ"]:
-            subs.append(feature['type'])
+            name += " " + feature['type']
 
         elif "RAZ" in rules:
-            subs.append("RAZ")
+            name += " " + "RAZ"
+
+        if add_seqno:
+            if len(feature['geometry']) > 1:
+                seqno = volume.get('seqno')
+                if not seqno:
+                    seqno = chr(ord('A') + feature['geometry'].index(volume))
+
+                name += "-{}".format(seqno)
 
         if "NOTAM" in rules:
-            subs.append("(NOTAM)")
+            name += " (NOTAM)"
 
-        freq = volume.get('frequency') or feature.get('frequency')
-        if freq:
-            subs.append("%.3f" % freq)
+    freq = volume.get('frequency') or feature.get('frequency')
+    if freq:
+        name += " {.3f}".format(freq)
 
-        if subs:
-            name = " ".join([feature['name'], " ".join(subs)])
-        else:
-            name = feature['name']
+    return name
 
-        return name
+def seq_name(volume, feature):
+    return name_func(volume, feature, True)
+
+def noseq_name(volume, feature):
+    return name_func(volume, feature, False)
 
 # Openair type function. Possible types are:
 #    A - G (class)
@@ -372,7 +378,7 @@ class Openair(Converter):
     latlon_fmt =  "{0[d]:02d}:{0[m]:02d}:{0[s]:02d} {0[ns]} "\
                   "{1[d]:03d}:{1[m]:02d}:{1[s]:02d} {1[ew]}"
 
-    def __init__(self, filter_func=default_filter, name_func=default_name,
+    def __init__(self, filter_func=default_filter, name_func=noseq_name,
                  type_func=default_openair_type, header=None):
         self.filter_func = filter_func
         self.name_func = name_func
@@ -444,7 +450,7 @@ class Tnp(Converter):
     latlon_fmt = "{0[ns]}{0[d]:02d}{0[m]:02d}{0[s]:02d} "\
                  "{1[ew]}{1[d]:03d}{1[m]:02d}{1[s]:02d}"
 
-    def __init__(self, filter_func=default_filter, name_func=default_name,
+    def __init__(self, filter_func=default_filter, name_func=noseq_name,
                  class_func=default_tnp_class, type_func=default_tnp_type,
                  header=None):
         self.filter_func = filter_func

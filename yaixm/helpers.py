@@ -20,6 +20,7 @@ import json as _json
 import logging
 import math
 import re
+from string import ascii_uppercase
 
 import jsonschema
 import pkg_resources
@@ -134,6 +135,15 @@ def merge_loa(airspace, loas):
         volume, feature = find_volume(merge_airspace, replace['id'])
         if feature is None:
             continue
+
+        # Update seqno, e.g. 12 -> 12A, 12B, etc
+        seqno = volume.get('seqno')
+        if seqno:
+            if len(replace['geometry']) > 0:
+                for n, g in enumerate(replace['geometry']):
+                    g['seqno'] = "%d%s" % (seqno, ascii_uppercase[n])
+            else:
+                replace['geometry'][0]['seqno'] = seqno
 
         # Delete old volume
         feature['geometry'].remove(volume)
