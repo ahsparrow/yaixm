@@ -82,6 +82,7 @@ definitions:
     items:
       type: string
       enum:
+        - INTENSE   # Intense activity
         - LOA       # Letter of agreement
         - NOSSR     # Non-SSR area
         - NOTAM     # NOTAM activated
