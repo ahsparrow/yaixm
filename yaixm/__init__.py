@@ -18,4 +18,4 @@
 from .helpers import load, validate, ordered_map_representer, merge_loa
 from .helpers import parse_latlon, parse_deg, dms, merge_service
 from .convert import Openair, Tnp, make_filter, make_openair_type, \
-                     make_tnp_class, make_tnp_type, seq_name
+                     make_tnp_class, make_tnp_type, seq_name, noseq_name

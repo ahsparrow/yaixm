@@ -147,7 +147,7 @@ def noseq_name(volume, feature):
 #    W (wave)
 #    MATZ (military ATZ)
 #    OTHER
-def make_openair_type(atz="CTR", ils="OTHER", glider="G", noatz="G", ul="G"):
+def make_openair_type(atz="CTR", ils="OTHER", glider="G", noatz="G", ul="G", comp=False):
     def openair_type(volume, feature):
         as_type = feature['type']
         localtype = feature.get('localtype')
@@ -158,11 +158,17 @@ def make_openair_type(atz="CTR", ils="OTHER", glider="G", noatz="G", ul="G"):
         elif as_type == "ATZ":
             out_type = atz
         elif as_type == "D":
-            out_type = "Q"
+            if comp and "SI" in rules:
+                out_type = "P"
+            else:
+                out_type = "Q"
         elif as_type == "D_OTHER":
             if localtype == "GLIDER":
                 # Wave box
                 out_type = "W"
+            elif comp and localtype == "DZ" and "INTENSE" in rules:
+                # Intense DZ's for competition airspace
+                out_type = "P"
             else:
                 # Danger area (Drop zone, HIRTA, etc.)
                 out_type = "Q"

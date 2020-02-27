@@ -19,7 +19,7 @@ import argparse
 import json
 import sys
 
-from .convert import Openair, Tnp, seq_name
+from .convert import Openair, Tnp, seq_name, make_openair_type
 from .helpers import load, validate, merge_loa
 
 def check():
@@ -56,7 +56,7 @@ def openair():
 
     # Convert to openair
     if args.comp:
-        convert = Openair(name_func=seq_name)
+        convert = Openair(name_func=seq_name, type_func=make_openair_type(comp=True))
     else:
         convert = Openair()
     oa = convert.convert(airspace['airspace'])
