@@ -126,7 +126,7 @@ def name_func(volume, feature, add_seqno=False):
 
     freq = volume.get('frequency') or feature.get('frequency')
     if freq:
-        name += " {.3f}".format(freq)
+        name += " {:.3f}".format(freq)
 
     return name
 
