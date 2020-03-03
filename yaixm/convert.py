@@ -114,7 +114,7 @@ def name_func(volume, feature, add_seqno=False):
             name += " " + "RAZ"
 
         if add_seqno:
-            if len(feature['geometry']) > 1:
+            if len(feature.get('geometry', [])) > 1:
                 seqno = volume.get('seqno')
                 if not seqno:
                     seqno = chr(ord('A') + feature['geometry'].index(volume))
