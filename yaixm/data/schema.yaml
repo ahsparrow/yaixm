@@ -309,6 +309,9 @@ definitions:
       name: *name
       notes: *notes
 
+      # LoA is always added to merged airspace
+      always: bool
+
     required: [name, areas]
     additionalProperties: False
 
