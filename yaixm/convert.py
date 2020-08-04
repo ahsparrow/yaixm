@@ -53,6 +53,7 @@ def make_filter(noatz=True, microlight=True, hgl=True,
         as_name = feature['name']
         as_type = feature['type']
         as_localtype = feature.get('localtype')
+        rules = feature.get('rules', []) + volume.get('rules', [])
 
         # Exclude if all properties match
         if exclude:
@@ -73,7 +74,7 @@ def make_filter(noatz=True, microlight=True, hgl=True,
             return False
 
         # Gliding sites
-        if not gliding_site and as_type == "OTHER" and as_localtype == "GLIDER":
+        if not gliding_site and as_type == "OTHER" and as_localtype == "GLIDER" and "LOA" not in rules:
             return False
 
         # Max level
