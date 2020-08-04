@@ -174,8 +174,11 @@ def make_openair_type(atz="CTR", ils="OTHER", glider="G", noatz="G", ul="G", com
                 out_type = "Q"
         elif as_type == "OTHER":
             if localtype == "GLIDER":
-                # Gliding sites - use configuraable type
-                out_type = glider
+                if 'LOA' in rules:
+                    out_type = "W"
+                else:
+                    # Gliding sites - use configuraable type
+                    out_type = glider
             elif localtype == "ILS":
                 out_type = ils
             elif localtype == "MATZ":
