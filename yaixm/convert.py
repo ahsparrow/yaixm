@@ -122,8 +122,9 @@ def name_func(volume, feature, add_seqno=False):
 
                 name += "-{}".format(seqno)
 
-        if "NOTAM" in rules:
-            name += " (NOTAM)"
+        qualifiers = [q for q in ["SI", "NOTAM"] if q in rules]
+        if qualifiers:
+            name += " ({})".format("/".join(qualifiers))
 
     freq = volume.get('frequency') or feature.get('frequency')
     if freq:
