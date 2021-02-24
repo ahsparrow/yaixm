@@ -131,6 +131,9 @@ def merge_loa(airspace, loas):
 
     # Replacement volumes
     for replace in replace_vols:
+        if len(replace['geometry']) == 0:
+            continue
+
         # Find volume to be replaced
         volume, feature = find_volume(merge_airspace, replace['id'])
         if feature is None:
@@ -141,7 +144,7 @@ def merge_loa(airspace, loas):
         if seqno:
             if len(replace['geometry']) > 0:
                 for n, g in enumerate(replace['geometry']):
-                    g['seqno'] = "%d%s" % (seqno, ascii_uppercase[n])
+                    g['seqno'] = "%s%s" % (str(seqno), ascii_uppercase[n])
             else:
                 replace['geometry'][0]['seqno'] = seqno
 
