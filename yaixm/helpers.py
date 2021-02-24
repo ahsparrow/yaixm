@@ -142,7 +142,7 @@ def merge_loa(airspace, loas):
         # Update seqno, e.g. 12 -> 12A, 12B, etc
         seqno = volume.get('seqno')
         if seqno:
-            if len(replace['geometry']) > 0:
+            if len(replace['geometry']) > 1:
                 for n, g in enumerate(replace['geometry']):
                     g['seqno'] = "%s%s" % (str(seqno), ascii_uppercase[n])
             else:
